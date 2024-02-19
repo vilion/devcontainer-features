@@ -15,7 +15,7 @@
     }
   },
   "installsAfter": [
-    "ghcr.io/vilion/devcontainer-features/neovim-essentials:0",
-    "ghcr.io/vilion/devcontainer-features/neovim:0"
+    "ghcr.io/vilion/devcontainer-features/neovim-essentials:0.1.2",
+    "ghcr.io/vilion/devcontainer-features/neovim:0.1.1"
   ]
 }
