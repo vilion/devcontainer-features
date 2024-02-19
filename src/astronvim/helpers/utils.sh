@@ -62,17 +62,4 @@ get_os_info_from_path() {
 
 source_matching_installer() {
 	. helpers/installers/ubuntu-00.00-50.00.sh
-	#read -r curr_os curr_os_version <<<"$(get_os_info)"
-
-	#for installer in "helpers/installers/$curr_os"*; do
-	#	read -r ins_os ins_vstart ins_vend <<<"$(get_os_info_from_path $installer)"
-	#	read -r is_match <<<"$(has_matching_version $ins_vstart $ins_vend $curr_os_version)"
-
-	#	if [ $is_match -eq 1 ]; then
-	#		. "$installer"
-	#	else
-	#		echo "No matching installer found for $curr_os $curr_os_version" >&2
-	#		exit 1
-	#	fi
-	#done
 }
