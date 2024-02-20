@@ -15,8 +15,9 @@ rm "$ASTRONVIM_VERSION.tar.gz"
 
 mkdir -p ~/.config
 mv "AstroNvim-${ASTRONVIM_VERSION#v}" ~/.config/nvim
-mkdir -p ~/.config/nvim/lua/user
-cp user_init.lua ~/.config/nvim/lua/user/init.lua
+#mkdir -p ~/.config/nvim/lua/user
+#touch ~/.config/nvim/lua/user/init.lua
+#echo "vim.o.shell = '/bin/bash'" >> ~/.config/nvim/lua/user/init.lua
 
 if command -v nvim &>/dev/null; then
 	nvim --headless "+Lazy! sync" +qa
