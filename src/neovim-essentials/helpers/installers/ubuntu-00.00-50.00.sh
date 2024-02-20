@@ -44,14 +44,9 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-if [ $UNZIP = "true" ]; then
-	pkgs+=("node")
-fi
-
-if [ $UNZIP = "true" ]; then
-	pkgs+=("npm")
-fi
-
 echo "${pkgs[@]}"
 
 apt install -y "${pkgs[@]}"
+curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+apt-get update
+apt install nodejs -y
