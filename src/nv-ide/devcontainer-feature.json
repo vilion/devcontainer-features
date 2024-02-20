@@ -1,0 +1,21 @@
+{
+  "name": "NV-IDE",
+  "id": "nv-ide",
+  "version": "0.0.2",
+  "description": "Provides nv-ide features for devcontainers",
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "v3.43.4",
+        "v3.43.3"
+      ],
+      "default": "v3.43.4",
+      "description": "Select the astronvim version you want to install as present in GitHub Releases"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/vilion/devcontainer-features/neovim-essentials:latest",
+    "ghcr.io/vilion/devcontainer-features/neovim:latest"
+  ]
+}
