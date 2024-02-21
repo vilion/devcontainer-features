@@ -2,7 +2,10 @@
 
 set -eux
 
-mkdir /root/.config
-cp -R helpers/installers/config-nvim /root/.config/nvim
+su - rails
+mkdir /home/rails/.config
+cp -R helpers/installers/config-nvim /home/rails/.config/nvim
+
+echo $HOME
 
 nvim --headless "+Lazy! sync" +qa
