@@ -44,6 +44,8 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
+pkgs+=("mysql-client")
+
 echo "${pkgs[@]}"
 
 apt install -y "${pkgs[@]}"
