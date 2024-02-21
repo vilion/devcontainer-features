@@ -44,9 +44,14 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-echo "${pkgs[@]}"
-
 apt install -y "${pkgs[@]}"
 curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
 apt-get update
 apt install nodejs -y
+
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb
+apt-get install -y lsb-release
+dpkg -i mysql-apt-config_0.8.29-1_all.deb
+apt-get update -y
+apt-get install -y mysql-apt-config
+apt-get install -y mysql-client
