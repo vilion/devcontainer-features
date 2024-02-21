@@ -3,6 +3,6 @@
 set -eux
 
 mkdir /root/.config
-cp -R helpers/installers/neovim /root/.nv-ide
+cp -R helpers/installers/config-nvim /root/.config/nvim
 
 nvim --headless "+Lazy! sync" +qa
