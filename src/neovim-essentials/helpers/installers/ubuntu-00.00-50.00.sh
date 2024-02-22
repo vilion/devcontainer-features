@@ -62,3 +62,5 @@ gem install neovim
 npm install -g neovim
 apt-get install fd-find
 apt-get install mlocate
+
+chown neovimuser:neovimuser -R /usr/local/bundle
