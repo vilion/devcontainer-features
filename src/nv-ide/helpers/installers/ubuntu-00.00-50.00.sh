@@ -2,8 +2,9 @@
 
 set -eux
 
-mkdir /home/rails/.config
-cp -R helpers/installers/config-nvim /home/rails/.config/nvim
+su - neovimuser -c 'mkdir /home/neovimuser/.config'
+su - neovimuser -c 'cp -R helpers/installers/config-nvim /home/neovimuser/.config/nvim'
 
-su - rails -c 'nvim --headless "+Lazy! sync" +qa'
-su - rails -c 'nvim --headless "+TSInstall! all" +qa'
+su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa'
+su - neovimuser -c 'nvim --headless "+TSInstallSync! all" +qa'
+updatedb
