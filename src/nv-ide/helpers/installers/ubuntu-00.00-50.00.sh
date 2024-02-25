@@ -21,3 +21,4 @@ chown neovimuser:neovimuser -R /home/neovimuser/.git-credentials
 chmod 777 -R /usr/local/bin
 su neovimuser -c 'cd /app && bundle install'
 updatedb
+apt-get install -y default-mysql-server
