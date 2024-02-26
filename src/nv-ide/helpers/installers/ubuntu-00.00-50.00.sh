@@ -11,14 +11,23 @@ rm -rf /usr/local/bundle
 mkdir /usr/local/bundle
 chmod 777 -R /usr/local/bundle
 chmod 777 -R /usr/local/lib/ruby
-mkdir /app/.bundle
-touch /app/.bundle/config
-chown neovimuser:neovimuser -R /app/.bundle
+if [ -d "/app" ]
+then
+	mkdir /app/.bundle
+	touch /app/.bundle/config
+	chown neovimuser:neovimuser -R /app/.bundle
+fi
 cp /root/.git-credentials /home/neovimuser/
 cp /root/.gitconfig /home/neovimuser/
 chown neovimuser:neovimuser -R /home/neovimuser/.gitconfig
 chown neovimuser:neovimuser -R /home/neovimuser/.git-credentials
 chmod 777 -R /usr/local/bin
-su neovimuser -c 'cd /app && bundle install'
-updatedb
+if command -v bundle
+then
+	su neovimuser -c 'cd /app && bundle install'
+fi
+if command -v updatedb
+then
+	updatedb
+fi
 apt-get install -y default-mysql-server

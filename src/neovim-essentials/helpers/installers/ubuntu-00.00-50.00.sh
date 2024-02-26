@@ -58,7 +58,10 @@ install lazygit /usr/local/bin
 adduser --uid 1000 neovimuser
 
 pip3 install pynvim
-gem install neovim
+if command -v gem
+then
+	gem install neovim
+fi
 npm install -g neovim
 apt-get install fd-find
 apt-get install mlocate
