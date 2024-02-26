@@ -20,10 +20,13 @@ then
 	touch /app/.bundle/config
 	chown neovimuser:neovimuser -R /app/.bundle
 fi
-cp /root/.git-credentials /home/neovimuser/
-cp /root/.gitconfig /home/neovimuser/
-chown neovimuser:neovimuser -R /home/neovimuser/.gitconfig
-chown neovimuser:neovimuser -R /home/neovimuser/.git-credentials
+if [ -d "/root/.git-credentials" ]
+then
+	cp /root/.git-credentials /home/neovimuser/
+	cp /root/.gitconfig /home/neovimuser/
+	chown neovimuser:neovimuser -R /home/neovimuser/.gitconfig
+	chown neovimuser:neovimuser -R /home/neovimuser/.git-credentials
+fi
 chmod 777 -R /usr/local/bin
 if command -v bundle
 then
