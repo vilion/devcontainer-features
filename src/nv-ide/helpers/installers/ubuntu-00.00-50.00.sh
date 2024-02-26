@@ -7,10 +7,13 @@ cp -R helpers/installers/config-nvim /home/neovimuser/.config/nvim
 chown neovimuser:neovimuser -R /home/neovimuser/.config/nvim
 
 su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa'
-rm -rf /usr/local/bundle
-mkdir /usr/local/bundle
-chmod 777 -R /usr/local/bundle
-chmod 777 -R /usr/local/lib/ruby
+if [ -d "/usr/local/bundle" ]
+then
+	rm -rf /usr/local/bundle
+	mkdir /usr/local/bundle
+	chmod 777 -R /usr/local/bundle
+	chmod 777 -R /usr/local/lib/ruby
+fi
 if [ -d "/app" ]
 then
 	mkdir /app/.bundle

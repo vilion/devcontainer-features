@@ -63,5 +63,6 @@ then
 	gem install neovim
 fi
 npm install -g neovim
+npm install -g @fivetrandevelopers/dbt-language-server
 apt-get install fd-find
 apt-get install mlocate
