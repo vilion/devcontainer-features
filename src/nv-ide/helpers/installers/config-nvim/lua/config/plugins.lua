@@ -10,29 +10,20 @@ return {
   },
   {
     "folke/tokyonight.nvim",
+    -- "olimorris/onedarkpro.nvim",
+    -- "loctvl842/monokai-pro.nvim",
+    -- "rebelot/kanagawa.nvim",
+    -- "sainnhe/gruvbox-material",
+    -- "projekt0n/github-nvim-theme",
     lazy = false,
-    enabled = true,
     priority = 1000,
      config = function()
        require('config.colorschemes.tokyonight')
-     end,
-  },
-  {
-    "sainnhe/gruvbox-material",
-    lazy = false,
-    enabled = false,
-    priority = 1000,
-     config = function()
-       require('config.colorschemes.gruvbox')
-     end,
-  },
-  {
-   "projekt0n/github-nvim-theme",
-    lazy = false,
-    enabled = false,
-    priority = 1000,
-     config = function()
-       require('config.colorschemes.github')
+       -- require('config.colorschemes.onedarkpro')
+       -- require('config.colorschemes.monokai_pro')
+       -- require('config.colorschemes.kanagawa')
+       -- require('config.colorschemes.gruvbox_material')
+       -- require('config.colorschemes.github_nvim_theme')
      end,
   },
   --[[ END COLORSCHEME ]]
@@ -373,13 +364,6 @@ return {
   {
     "mrbjarksen/neo-tree-diagnostics.nvim",
     event = 'VeryLazy',
-    config = function()
-      require("trouble").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    end,
   },
   {
     "RRethy/vim-illuminate",
@@ -580,7 +564,7 @@ return {
   },
   {
     "SR-Mystar/yazi.nvim",
-    lazy = true,
+    event = 'VeryLazy',
     cmd = "Yazi",
     opts = {
       title = "",
@@ -589,5 +573,24 @@ return {
     keys = {
       { "<F5>", "<cmd>Yazi<CR>", desc = "Toggle Yazi" },
     },
+  },
+  {
+    "craftzdog/solarized-osaka.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    config = function()
+        require("null-ls").setup({
+        sources = {
+          null_ls.builtins.formatting.stylua,
+          null_ls.builtins.diagnostics.eslint,
+          null_ls.builtins.completion.spell,
+        },
+      })
+    end,
+    dependencies = {"nvim-lua/plenary.nvim", "vim-test/vim-test"}
   }
 }
