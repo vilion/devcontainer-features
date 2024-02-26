@@ -40,18 +40,18 @@ end
 
 function M.config()
   local lspconfig = require("lspconfig")
-  lspconfig.efm.setup({
-    init_options = { documentFormatting = true },
-    settings = {
-      languages = {
-        slim = {
-          lintCommand = "slim-lint --stdin-file-path ${INPUT}",
-          lintStdin = true,
-          lintFormats = { '%f:%l [%t] %m' },
-        }
-      }
-    }
-  })
+  -- lspconfig.efm.setup({
+  --   init_options = { documentFormatting = true },
+  --   settings = {
+  --     languages = {
+  --       slim = {
+  --         lintCommand = "slim-lint --stdin-file-path ${INPUT}",
+  --         lintStdin = true,
+  --         lintFormats = { '%f:%l [%t] %m' },
+  --       }
+  --     }
+  --   }
+  -- })
   local mason_lspconfig = require("mason-lspconfig")
   local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
   capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -135,10 +135,11 @@ function M.config()
         on_attach = M.on_attach,
         capabilities,
         filetypes = { "ruby", "eruby" },
+        cmd = {"bundle", "exec", "solargraph", "stdio"},
         settings = {
           solargraph = {
             useBundler = true,
-            diagnostic = true,
+            diagnostics = true,
             completion = true,
             hover = true,
             formatting = true,
@@ -215,9 +216,27 @@ function M.config()
           }
         }
       })
-    end,
+    end
   }
   require("ufo").setup()
+  local configs = require("lspconfig.configs")
+  configs.dbt = {
+    default_config = {
+      cmd = { "dbt-language-server", "--stdio" },
+      root_dir = require("lspconfig.util").root_pattern("dbt_project.yml", "dbt_project.yaml"),
+      filetypes = { "sql", "yml" },
+    },
+  }
+
+  require("lspconfig").dbt.setup({
+    init_options = {
+      pythonInfo = {
+        path = "/usr/bin/python3",
+      },
+      lspMode = "dbtProject",
+      enableSnowflakeSyntaxCheck = true,
+    },
+  })
 end
 
 return M
