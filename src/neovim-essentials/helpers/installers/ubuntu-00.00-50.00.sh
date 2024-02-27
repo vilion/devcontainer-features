@@ -67,3 +67,17 @@ npm install -g @fivetrandevelopers/dbt-language-server
 apt-get install fd-find
 apt-get install mlocate
 apt-get install xsel xclip wl-clipboard
+
+apt-get install -y gettext \
+    libcurl4-gnutls-dev \
+    libexpat1-dev \
+    libghc-zlib-dev \
+    libssl-dev \
+    make \
+    wget
+
+ wget https://github.com/git/git/archive/refs/tags/v2.44.0.tar.gz \
+    && tar -xzf v2.44.0.tar.gz \
+    && cd git-* \
+    && make prefix=/usr/local all \
+    && make prefix=/usr/local install
