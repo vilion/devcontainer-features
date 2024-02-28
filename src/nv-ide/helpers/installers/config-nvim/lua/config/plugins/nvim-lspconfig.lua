@@ -71,6 +71,7 @@ function M.config()
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
   end
 
+  print 'mason'
   require("mason").setup({
     ui = {
       border = {"┏", "━", "┓", "┃", "┛", "━", "┗", "┃"},
@@ -216,7 +217,7 @@ function M.config()
           }
         }
       })
-    end
+    end,
   }
   require("ufo").setup()
   local configs = require("lspconfig.configs")
@@ -225,17 +226,19 @@ function M.config()
       cmd = { "dbt-language-server", "--stdio" },
       root_dir = require("lspconfig.util").root_pattern("dbt_project.yml", "dbt_project.yaml"),
       filetypes = { "sql", "yml" },
+      init_options = {
+        pythonInfo = {
+          path = "python",
+        },
+        lspMode = "dbtProject",
+        enableSnowflakeSyntaxCheck = true,
+      },
     },
   }
 
   require("lspconfig").dbt.setup({
-    init_options = {
-      pythonInfo = {
-        path = "/usr/bin/python3",
-      },
-      lspMode = "dbtProject",
-      enableSnowflakeSyntaxCheck = true,
-    },
+    on_attach = M.on_attach,
+    capabilities
   })
 end
 
