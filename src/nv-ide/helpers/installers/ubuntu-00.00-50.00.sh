@@ -14,12 +14,14 @@ then
 	chmod 777 -R /usr/local/bundle
 	chmod 777 -R /usr/local/lib/ruby
 fi
+
 if [ -d "/app" ]
 then
 	mkdir /app/.bundle
 	touch /app/.bundle/config
-	chown neovimuser:neovimuser -R /app/.bundle
+	chown neovimuser:neovimuser -R /app
 fi
+
 if [ -e "/root/.git-credentials" ]
 then
 	cp /root/.git-credentials /home/neovimuser/
@@ -27,11 +29,13 @@ then
 	chown neovimuser:neovimuser -R /home/neovimuser/.gitconfig
 	chown neovimuser:neovimuser -R /home/neovimuser/.git-credentials
 fi
+
 chmod 777 -R /usr/local/bin
 if command -v bundle
 then
-	su neovimuser -c 'cd /app && bundle install'
+	su neovimuser -c 'cd /app && bundle install && yard gems && bundle exec rbs collection init && bundle exec rbs collection install'
 fi
+
 if command -v updatedb
 then
 	updatedb
