@@ -33,7 +33,7 @@ fi
 chmod 777 -R /usr/local/bin
 if command -v bundle
 then
-	su neovimuser -c 'cd /app && bundle install && yard gems && bundle exec rbs collection init && bundle exec rbs collection install'
+	su neovimuser -c 'cd /app && bundle install && bundle exec rbs collection init && bundle exec rbs collection install'
 fi
 
 if command -v updatedb
