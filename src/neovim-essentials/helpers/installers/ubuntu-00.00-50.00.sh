@@ -48,7 +48,6 @@ apt install -y "${pkgs[@]}"
 curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
 apt-get update
 apt install nodejs -y
-apt install xsel xclip wl-clipboard -y
 
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
@@ -66,7 +65,6 @@ npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
 apt-get install fd-find
 apt-get install mlocate
-apt-get install xsel xclip wl-clipboard
 
 apt-get install -y gettext \
     libcurl4-gnutls-dev \
@@ -74,7 +72,15 @@ apt-get install -y gettext \
     libghc-zlib-dev \
     libssl-dev \
     make \
-    wget
+    wget \
+    libx11-dev \
+    libxtst-dev \
+    libxt-dev \
+    libsm-dev \
+    libxpm-dev
+
+apt install xsel xclip wl-clipboard -y
+apt-get install -y xsel xclip wl-clipboard
 
  wget https://github.com/git/git/archive/refs/tags/v2.44.0.tar.gz \
     && tar -xzf v2.44.0.tar.gz \
