@@ -63,7 +63,7 @@ then
 fi
 npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
-apt-get install fd-find
+apt-get install fd-find less
 apt-get install mlocate
 
 apt-get install -y gettext \
