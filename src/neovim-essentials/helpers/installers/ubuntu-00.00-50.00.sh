@@ -82,7 +82,7 @@ apt-get install -y gettext \
 apt install xsel xclip wl-clipboard -y
 apt-get install -y xsel xclip wl-clipboard
 
- wget https://github.com/git/git/archive/refs/tags/v2.44.0.tar.gz \
+ wget https://github.com/git/git/archive/refs/tags/v2.45.1.tar.gz \
     && tar -xzf v2.44.0.tar.gz \
     && cd git-* \
     && make prefix=/usr/local all \
