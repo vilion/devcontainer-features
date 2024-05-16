@@ -1,7 +1,7 @@
 {
   "name": "NeovimEssentials",
   "id": "neovim-essentials",
-  "version": "0.2.20",
+  "version": "0.2.22",
   "description": "Provide essentials features for neovim for devcontainers",
   "options": {
     "git": {
