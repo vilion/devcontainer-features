@@ -1,16 +1,13 @@
 {
   "name": "Neovim",
   "id": "neovim",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Provide neovim features for devcontainers",
   "options": {
     "version": {
       "type": "string",
       "proposals": [
-        "v0.9.4",
-        "v0.9.5",
-        "stable",
-        "nightly"
+        "v0.9.5"
       ],
       "default": "stable",
       "description": "Select the neovim version you want to install as present in GitHub Releases"
