@@ -1,14 +1,14 @@
 {
   "name": "Neovim",
   "id": "neovim",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Provide neovim features for devcontainers",
   "options": {
     "version": {
       "type": "string",
       "proposals": [
-        "v0.9.4",
-        "v0.9.5",
+        "v0.10.1",
+        "v0.10.0",
         "stable",
         "nightly"
       ],
