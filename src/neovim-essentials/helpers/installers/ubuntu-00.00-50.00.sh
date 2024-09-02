@@ -44,6 +44,12 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
+wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
+	&& tar -xzf v2.46.0.tar.gz \
+	&& cd git-* \
+	&& make prefix=/usr/local all \
+	&& make prefix=/usr/local install
+
 apt install -y "${pkgs[@]}"
 curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
 apt-get update
@@ -82,8 +88,9 @@ apt-get install -y gettext \
 apt install xsel xclip wl-clipboard -y
 apt-get install -y xsel xclip wl-clipboard
 
- wget https://github.com/git/git/archive/refs/tags/v2.45.1.tar.gz \
-    && tar -xzf v2.45.1.tar.gz \
-    && cd git-* \
-    && make prefix=/usr/local all \
-    && make prefix=/usr/local install
+su - neovimuser << EOF
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+PATH="$PATH:$HOME/.cargo/bin"
+rustup update
+cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
+EOF
