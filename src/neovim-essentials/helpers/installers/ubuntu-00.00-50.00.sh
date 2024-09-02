@@ -8,10 +8,6 @@ env
 
 pkgs=()
 
-if [ $GIT = "true" ]; then
-	pkgs+=("git")
-fi
-
 if [ $BUILD_ESSENTIAL = "true" ]; then
 	pkgs+=("build-essential")
 fi
@@ -44,7 +40,30 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
+# pkgs+=("lua5.1")
+pkgs+=("autotools-dev")
+pkgs+=("autoconf")
+pkgs+=("pkg-config")
+
+cd /tmp
 apt install -y "${pkgs[@]}"
+# wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
+# 	&& tar -xzf luarocks-3.11.1.tar.gz \
+# 	&& cd luarocks-3.11.1 \
+# 	&& ./configure --with-lua-include=/usr/include --with-lua-bin=/usr/bin/ \
+#         && make \
+#         && make install
+
+cd /tmp
+git clone https://github.com/universal-ctags/ctags.git
+cd ctags
+./autogen.sh
+./configure
+make
+make install
+ctags --version
+
+cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
 apt-get update
 apt install nodejs -y
@@ -57,12 +76,9 @@ install lazygit /usr/local/bin
 adduser --uid 1000 neovimuser
 
 pip3 install pynvim
-if command -v gem
-then
-	gem install neovim
-fi
 npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
+npm install -g tree-sitter-cli
 apt-get install fd-find less
 apt-get install mlocate
 
@@ -77,13 +93,31 @@ apt-get install -y gettext \
     libxtst-dev \
     libxt-dev \
     libsm-dev \
-    libxpm-dev
+    libxpm-dev \
+    openssh-server
+
+cd /tmp
+wget https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.119/linux64/chromedriver-linux64.zip
+unzip chromedriver-linux64.zip
+cp chromedriver-linux64/chromedriver /usr/bin/
+
+wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
+	&& tar -xzf v2.46.0.tar.gz \
+	&& cd git-* \
+	&& make prefix=/usr/local all \
+	&& make prefix=/usr/local install
 
 apt install xsel xclip wl-clipboard -y
 apt-get install -y xsel xclip wl-clipboard
 
- wget https://github.com/git/git/archive/refs/tags/v2.45.1.tar.gz \
-    && tar -xzf v2.45.1.tar.gz \
-    && cd git-* \
-    && make prefix=/usr/local all \
-    && make prefix=/usr/local install
+su -l neovimuser << 'EOF'
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+export PATH=$PATH:$HOME/.cargo/bin
+rustup update
+cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
+if command -v gem
+then
+	gem install neovim
+fi
+cargo install lsp-ai
+EOF
