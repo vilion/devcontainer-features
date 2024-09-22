@@ -64,12 +64,16 @@ make install
 ctags --version
 
 cd /tmp
-curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get update
-apt install nodejs -y
+apt install -y nodejs
 
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+if [ "$(uname -m)" = "aarch64" ]; then
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
+else
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+fi
 tar xf lazygit.tar.gz lazygit
 install lazygit /usr/local/bin
 
@@ -96,10 +100,10 @@ apt-get install -y gettext \
     libxpm-dev \
     openssh-server
 
-cd /tmp
-wget https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.119/linux64/chromedriver-linux64.zip
-unzip chromedriver-linux64.zip
-cp chromedriver-linux64/chromedriver /usr/bin/
+# cd /tmp
+# wget https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.119/linux64/chromedriver-linux64.zip
+# unzip chromedriver-linux64.zip
+# cp chromedriver-linux64/chromedriver /usr/bin/
 
 wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
 	&& tar -xzf v2.46.0.tar.gz \
