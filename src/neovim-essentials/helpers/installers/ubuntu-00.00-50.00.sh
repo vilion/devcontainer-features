@@ -40,7 +40,8 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-pkgs+=("lua5.1")
+pkgs+=("lua5.4")
+pkgs+=("fzf")
 pkgs+=("luajit")
 pkgs+=("autotools-dev")
 pkgs+=("autoconf")
