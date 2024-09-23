@@ -5,10 +5,14 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
     "MunifTanjim/nui.nvim",
+    "mrbjarksen/neo-tree-diagnostics.nvim",
     -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
   },
+  keys = {
+    { "<F7>", "<cmd>Neotree filesystem reveal left toggle<cr>", desc = "Neotree" },
+  },
   event = 'VeryLazy',
-  enabled = true,
+  enabled = false,
   config = function()
     require'neo-tree'.setup({
       open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "edgy" },
@@ -17,24 +21,24 @@ return {
       -- popup_border_style = "rounded",
       enable_git_status = true,
       enable_diagnostics = true,
-      sources = {
-        "filesystem",
-        "buffers",
-        "git_status",
-        "diagnostics"
-      },
-      source_selector = {
-        winbar = false,
-        statusline = false, -- toggle to show selector on statusline
-        content_layout = "center",
-        tabs_layout = "equal",
-        sources = {
-          { source = "filesystem", display_name = "" },
-          { source = "buffers", display_name = "" },
-          { source = "git_status", display_name = "" },
-          { source = "diagnostics", display_name = "裂" }
-        },
-      },
+      --[[ sources = { ]]
+      --[[   "filesystem", ]]
+      --[[   "buffers", ]]
+      --[[   "git_status", ]]
+      --[[   "diagnostics" ]]
+      --[[ }, ]]
+      --[[ source_selector = { ]]
+      --[[   winbar = false, ]]
+      --[[   statusline = false, -- toggle to show selector on statusline ]]
+      --[[   content_layout = "center", ]]
+      --[[   tabs_layout = "equal", ]]
+      --[[   sources = { ]]
+      --[[     { source = "filesystem", display_name = "" }, ]]
+      --[[     { source = "buffers", display_name = "" }, ]]
+      --[[     { source = "git_status", display_name = "" }, ]]
+      --[[     { source = "diagnostics", display_name = "裂" } ]]
+      --[[   }, ]]
+      --[[ }, ]]
       default_component_configs = {
         container = {
           enable_character_fade = true,

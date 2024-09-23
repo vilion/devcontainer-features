@@ -27,10 +27,11 @@ return {
     end
 
     local function footer()
-      local total_plugins = require("lazy").stats().count
+      local stats = require("lazy").stats()
+      local ms = math.floor(stats.startuptime * 100 + 0.5) / 100
       local date = os.date("%d-%m-%Y")
       local time = os.date("%H:%M:%S")
-      return "[ " .. total_plugins .. " plugins] [ " .. date .. "] [ " .. time .. "]"
+      return "[  Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. stats.startuptime .. "ms] [ " .. date .. "] [ " .. time .. "]"
     end
 
     local function icon(fn)
@@ -175,28 +176,52 @@ return {
       }
     }
 
-    local buttons = {
-      type = "group",
-      val = {
-        { type = "text", val = "Quick links", opts = { hl = "Constant", position = "center" } },
-        { type = "padding", val = 1 },
-        dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("o", "ﭯ  Recently opened files", ":Telescope oldfiles<CR>"),
-        dashboard.button("f", "  Find file", ":lua require('telescope.builtin').find_files()<CR>"),
-        dashboard.button("p", "  Find project", ":Telescope repo list<CR>"),
-        dashboard.button("r", "  Find word", ":lua require('telescope.builtin').live_grep()<CR>"),
-        dashboard.button("g", "  Find modified file", ":lua require('config.plugins.telescope').my_git_status()<CR>"),
-        dashboard.button("m", "  Show mark", ":Telescope marks"),
-        dashboard.button("t", "  Show todo", ":TodoTelescope<CR>"),
-        dashboard.button("s", "  NV-IDE plugins", ":e ~/.config/nvim/lua/config/plugins.lua<CR>"),
-        -- dashboard.button("u", "  Sync plugins", ":PackerSync<CR>"),
-        dashboard.button("l", "  Lazy", ":Lazy<CR>"),
-        dashboard.button("u", "  Sync plugins", ":Lazy sync<CR>"),
-        dashboard.button("h", "  Neovim Check health", ":checkhealth<CR>"),
-        dashboard.button("q", "  Quit", "<Cmd>qa<CR>")
-      },
-      position = "center",
-    }
+    local buttons = {}
+    if package.loaded["telescope"] then
+      buttons = {
+        type = "group",
+        val = {
+          { type = "text", val = "Quick links", opts = { hl = "Constant", position = "center" } },
+          { type = "padding", val = 1 },
+          dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+          dashboard.button("o", "ﭯ  Recently opened files", ":Telescope oldfiles<CR>"),
+          dashboard.button("f", "  Find file", ":lua require('telescope.builtin').find_files()<CR>"),
+          dashboard.button("p", "  Find project", ":Telescope repo list<CR>"),
+          dashboard.button("r", "  Find word", ":lua require('telescope.builtin').live_grep()<CR>"),
+          dashboard.button("g", "  Find modified file", ":lua require('plugins.telescope').my_git_status()<CR>"),
+          dashboard.button("m", "  Show mark", ":Telescope marks"),
+          dashboard.button("t", "  Show todo", ":TodoTelescope<CR>"),
+          dashboard.button("s", "  NV-IDE plugins", ":e ~/.config/nvim/lua/plugins/init.lua<CR>"),
+          dashboard.button("l", "  Lazy", ":Lazy<CR>"),
+          dashboard.button("u", "  Sync plugins", ":Lazy sync<CR>"),
+          dashboard.button("h", "  Neovim Check health", ":checkhealth<CR>"),
+          dashboard.button("q", "  Quit", "<Cmd>qa<CR>")
+        },
+        position = "center",
+      }
+    else
+      buttons = {
+        type = "group",
+        val = {
+          { type = "text", val = "Quick links", opts = { hl = "Constant", position = "center" } },
+          { type = "padding", val = 1 },
+          dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+          dashboard.button("o", "ﭯ  Recently opened files", ":FzfLua oldfiles<CR>"),
+          dashboard.button("f", "  Find file", ":FzfLua files<CR>"),
+          dashboard.button("p", "  Find project", ":GitProjects<CR>"),
+          dashboard.button("r", "  Find word", ":FzfLua live_grep<CR>"),
+          dashboard.button("g", "  Find modified file", ":FzfLua git_status<CR>"),
+          dashboard.button("m", "  Show mark", ":FzfLua marks<CR>"),
+          dashboard.button("t", "  Show todo", ":TodoQuickFix<CR>"),
+          dashboard.button("s", "  NV-IDE plugins", ":e ~/.config/nvim/lua/plugins/init.lua<CR>"),
+          dashboard.button("l", "  Lazy", ":Lazy<CR>"),
+          dashboard.button("u", "  Sync plugins", ":Lazy sync<CR>"),
+          dashboard.button("h", "  Neovim Check health", ":checkhealth<CR>"),
+          dashboard.button("q", "  Quit", "<Cmd>qa<CR>")
+        },
+        position = "center",
+      }
+    end
 
     local section_footer = {
       type = "group",

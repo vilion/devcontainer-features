@@ -1,6 +1,6 @@
 return {
   "akinsho/nvim-toggleterm.lua",
-  keys = { '<leader>x', '<leader>gg', '<leader>ld' },
+  keys = { '<leader>x', '<leader>gg', '<leader>ld', '<F5>' },
   config = function()
     require("toggleterm").setup({
       size = 20,
@@ -13,6 +13,18 @@ return {
       persist_size = true,
       direction = "horizontal",
       close_on_exit = true,
+      highlights = {
+        Normal = {
+          guibg = "#181818",
+        },
+        NormalFloat = {
+          link = '#181818'
+        },
+        FloatBorder = {
+          guifg = "#ea6962",
+          guibg = "#282828",
+        },
+      },
       float_opts = {
         border = { "┏", "━", "┓", "┃", "┛","━", "┗", "┃" },
       }
@@ -23,8 +35,9 @@ return {
 
     -- Esc twice to get to normal mode
     local Terminal  = require('toggleterm.terminal').Terminal
-    local lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = "float", float_opts = { width = vim.o.columns, height = vim.o.lines } })
+    local lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = "float" })
     local lazydocker = Terminal:new({ cmd = "lazydocker", hidden = true, direction = "float" })
+    -- local ranger = Terminal:new({ cmd = "ranger", hidden = true, direction = "float" })
 
     function _lazygit_toggle()
       lazygit:toggle()
@@ -34,8 +47,12 @@ return {
       lazydocker:toggle()
     end
 
+    -- function _ranger_toggle()
+    --   ranger:toggle()
+    -- end
 
     vim.api.nvim_set_keymap("n", "<leader>gg", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
     vim.api.nvim_set_keymap("n", "<leader>ld", "<cmd>lua _lazydocker_toggle()<CR>", {noremap = true, silent = true})
+    -- vim.api.nvim_set_keymap("n", "<F5>", "<cmd>lua _ranger_toggle()<CR>", {noremap = true, silent = true})
   end,
 }
