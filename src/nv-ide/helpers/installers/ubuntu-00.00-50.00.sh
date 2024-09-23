@@ -35,8 +35,9 @@ chmod 777 -R /usr/local/bin
 if command -v bundle
 then
 	#su neovimuser -c 'cd /app && bundle install && bundle exec rbs collection init && bundle exec rbs collection install'
-	su neovimuser -c 'cd /app && BUNDLE_GEMFILE=Gemfile.local bundle install'
 	su neovimuser -c 'cd /app && git config --global --add safe.directory /app'
+	su neovimuser -c 'cd /app && BUNDLE_GEMFILE=Gemfile.local bundle install'
+	su neovimuser -c 'cd /app && gem install neovim && gem install debug'
 fi
 
 if command -v updatedb
