@@ -13,6 +13,7 @@ then
 	mkdir /usr/local/bundle
 	chmod 777 -R /usr/local/bundle
 	chmod 777 -R /usr/local/lib/ruby
+	chown neovimuser:neovimuser -R /usr/local/bundle
 fi
 
 if [ -d "/app" ]
@@ -35,6 +36,7 @@ if command -v bundle
 then
 	#su neovimuser -c 'cd /app && bundle install && bundle exec rbs collection init && bundle exec rbs collection install'
 	su neovimuser -c 'cd /app && bundle install'
+	chown neovimuser:neovimuser -R /usr/local/bundle/cache/bundler
 fi
 
 if command -v updatedb
