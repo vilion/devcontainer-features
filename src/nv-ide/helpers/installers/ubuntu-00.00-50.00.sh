@@ -13,6 +13,7 @@ then
 	mkdir /usr/local/bundle
 	chmod 777 -R /usr/local/bundle
 	chmod 777 -R /usr/local/lib/ruby
+	chown neovimuser:neovimuser -R /usr/local/bundle
 fi
 
 if [ -d "/app" ]
