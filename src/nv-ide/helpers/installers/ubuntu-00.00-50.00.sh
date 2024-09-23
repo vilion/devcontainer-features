@@ -37,6 +37,7 @@ then
 	#su neovimuser -c 'cd /app && bundle install && bundle exec rbs collection init && bundle exec rbs collection install'
 	su neovimuser -c 'cd /app && bundle install'
 	chown neovimuser:neovimuser -R /usr/local/bundle/cache/bundler
+	su neovimuser -c 'cd /app && git config --global --add safe.directory /app'
 fi
 
 if command -v updatedb
