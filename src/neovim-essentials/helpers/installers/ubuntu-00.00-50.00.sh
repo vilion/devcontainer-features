@@ -40,19 +40,19 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-# pkgs+=("lua5.1")
+pkgs+=("lua5.1")
 pkgs+=("autotools-dev")
 pkgs+=("autoconf")
 pkgs+=("pkg-config")
 
 cd /tmp
 apt install -y "${pkgs[@]}"
-# wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
-# 	&& tar -xzf luarocks-3.11.1.tar.gz \
-# 	&& cd luarocks-3.11.1 \
-# 	&& ./configure --with-lua-include=/usr/include --with-lua-bin=/usr/bin/ \
-#         && make \
-#         && make install
+wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
+	&& tar -xzf luarocks-3.11.1.tar.gz \
+	&& cd luarocks-3.11.1 \
+	&& ./configure --with-lua-include=/usr/include --with-lua-bin=/usr/bin/ \
+        && make \
+        && make install
 
 cd /tmp
 git clone https://github.com/universal-ctags/ctags.git
