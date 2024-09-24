@@ -36,6 +36,8 @@ if command -v bundle
 then
 	#su neovimuser -c 'cd /app && bundle install && bundle exec rbs collection init && bundle exec rbs collection install'
 	su neovimuser -c 'cd /app && git config --global --add safe.directory /app'
+	su neovimuser -c 'cd /app && git config --global user.email "takabatakekoichi@gmail.com"'
+	su neovimuser -c 'cd /app && git config --global user.name "takabatake"'
 	su neovimuser -c 'cd /app && bundle install'
 	su neovimuser -c 'cd /app && gem install neovim && gem install debug'
 fi

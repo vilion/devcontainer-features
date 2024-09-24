@@ -82,6 +82,7 @@ install lazygit /usr/local/bin
 adduser --uid 1000 neovimuser
 
 pip3 install pynvim
+pip3 install pre-commit
 npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
 npm install -g tree-sitter-cli
