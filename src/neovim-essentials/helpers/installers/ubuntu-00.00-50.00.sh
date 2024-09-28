@@ -46,6 +46,8 @@ pkgs+=("luajit")
 pkgs+=("autotools-dev")
 pkgs+=("autoconf")
 pkgs+=("pkg-config")
+pkgs+=("fonts-liberation")
+pkgs+=("dbus")
 
 cd /tmp
 apt install -y "${pkgs[@]}"
