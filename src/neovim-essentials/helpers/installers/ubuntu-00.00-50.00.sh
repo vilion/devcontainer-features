@@ -46,9 +46,16 @@ pkgs+=("luajit")
 pkgs+=("autotools-dev")
 pkgs+=("autoconf")
 pkgs+=("pkg-config")
+pkgs+=("fonts-liberation")
+pkgs+=("dbus")
+pkgs+=("fonts-dejavu-core")
+pkgs+=("fonts-dejavu")
+pkgs+=("fonts-freefont-ttf")
+pkgs+=("upower")
 
 cd /tmp
 apt install -y "${pkgs[@]}"
+dpkg-reconfigure dbus
 wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
 	&& tar -xzf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
