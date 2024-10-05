@@ -52,16 +52,20 @@ pkgs+=("fonts-dejavu-core")
 pkgs+=("fonts-dejavu")
 pkgs+=("fonts-freefont-ttf")
 pkgs+=("upower")
+pkgs+=("liblua5.4-dev")
 
 cd /tmp
 apt install -y "${pkgs[@]}"
 dpkg-reconfigure dbus
-wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
-	&& tar -xzf luarocks-3.11.1.tar.gz \
+wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
+	&& tar -xzpf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
-	&& ./configure --with-lua-include=/usr/include --with-lua-bin=/usr/bin/ \
+	&& ./configure --with-lua-include=/usr/include/lua5.4 --with-lua-bin=/usr/bin \
         && make \
         && make install
+
+luarocks config variables.LUA_INCDIR /usr/include/lua5.4
+luarocks install jsregexp
 
 cd /tmp
 git clone https://github.com/universal-ctags/ctags.git
