@@ -40,7 +40,7 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-pkgs+=("lua5.4")
+pkgs+=("lua5.1")
 pkgs+=("fzf")
 pkgs+=("luajit")
 pkgs+=("autotools-dev")
@@ -56,8 +56,8 @@ pkgs+=("upower")
 cd /tmp
 apt install -y "${pkgs[@]}"
 dpkg-reconfigure dbus
-wget https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz \
-	&& tar -xzf luarocks-3.11.1.tar.gz \
+wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
+	&& tar -xzpf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
 	&& ./configure --with-lua-include=/usr/include --with-lua-bin=/usr/bin/ \
         && make \
