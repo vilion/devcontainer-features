@@ -39,7 +39,8 @@ then
 	su neovimuser -c 'cd /app && git config --global user.email "takabatakekoichi@gmail.com"'
 	su neovimuser -c 'cd /app && git config --global user.name "takabatake"'
 	su neovimuser -c 'cd /app && bundle install'
-	su neovimuser -c 'cd /app && gem install neovim && gem install debug'
+	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs'
+	su neovimuser -c 'cd /app && rbs collection init && rbs collection install'
 fi
 
 if command -v updatedb
