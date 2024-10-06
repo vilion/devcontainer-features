@@ -40,7 +40,7 @@ if [ $UNZIP = "true" ]; then
 	pkgs+=("unzip")
 fi
 
-pkgs+=("lua5.4")
+pkgs+=("lua5.1")
 pkgs+=("fzf")
 pkgs+=("luajit")
 pkgs+=("autotools-dev")
@@ -52,7 +52,7 @@ pkgs+=("fonts-dejavu-core")
 pkgs+=("fonts-dejavu")
 pkgs+=("fonts-freefont-ttf")
 pkgs+=("upower")
-pkgs+=("liblua5.4-dev")
+pkgs+=("liblua5.1-dev")
 
 cd /tmp
 apt install -y "${pkgs[@]}"
@@ -60,12 +60,12 @@ dpkg-reconfigure dbus
 wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
 	&& tar -xzpf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
-	&& ./configure --with-lua-include=/usr/include/lua5.4 --with-lua-bin=/usr/bin \
+	&& ./configure --with-lua-include=/usr/include/lua5.1 --with-lua-bin=/usr/bin \
         && make \
         && make install
 
-luarocks config variables.LUA_INCDIR /usr/include/lua5.4
-luarocks install jsregexp
+luarocks config variables.LUA_INCDIR /usr/include/lua5.1
+# luarocks install jsregexp
 
 cd /tmp
 git clone https://github.com/universal-ctags/ctags.git
