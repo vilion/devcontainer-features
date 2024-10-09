@@ -41,6 +41,7 @@ then
 	su neovimuser -c 'cd /app && bundle install'
 	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs'
 	su neovimuser -c 'cd /app && rbs collection init && rbs collection install'
+	su neovimuser -c 'cd /app && yard gems'
 fi
 
 if command -v updatedb
