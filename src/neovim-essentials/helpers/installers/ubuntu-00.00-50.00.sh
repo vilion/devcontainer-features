@@ -78,7 +78,6 @@ ctags --version
 
 cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-apt-get update
 apt install -y nodejs
 
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
@@ -124,6 +123,12 @@ wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
 	&& cd git-* \
 	&& make prefix=/usr/local all \
 	&& make prefix=/usr/local install
+
+cd /tmp
+wget https://github.com/bcpierce00/unison/releases/download/v2.53.5/unison-2.53.5-ubuntu-x86_64.tar.gz \
+	&& tar -xzf unison-2.53.5-ubuntu-x86_64.tar.gz \
+	&& cp unison-2.53.5-ubuntu-x86_64/bin/unison /usr/local/bin/ \
+	&& cp --recursive --update --verbose unison-2.53.5-ubuntu-x86_64/man/* /usr/local/man
 
 apt install xsel xclip wl-clipboard -y
 apt-get install -y xsel xclip wl-clipboard
