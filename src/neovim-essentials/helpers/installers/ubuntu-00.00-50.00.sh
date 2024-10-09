@@ -78,7 +78,7 @@ ctags --version
 
 cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-apt-get update
+apt-get update && apt-get install -y unison
 apt install -y nodejs
 
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
