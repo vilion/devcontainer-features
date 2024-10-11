@@ -15,7 +15,7 @@ Provides astronvim features for devcontainers
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| version | Select the astronvim version you want to install as present in GitHub Releases | string | v3.37.2 |
+| version | Select the astronvim version you want to install as present in GitHub Releases | string | v3.43.4 |
 
 
 
