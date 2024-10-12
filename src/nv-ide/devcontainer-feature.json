@@ -1,7 +1,7 @@
 {
   "name": "NV-IDE",
   "id": "nv-ide",
-  "version": "0.0.63",
+  "version": "0.0.65",
   "description": "Provides nv-ide features for devcontainers",
   "options": {
     "version": {

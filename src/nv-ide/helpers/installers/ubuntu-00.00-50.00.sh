@@ -37,10 +37,10 @@ then
 	su neovimuser -c 'cd /app && git config --global --add safe.directory /app'
 	su neovimuser -c 'cd /app && git config --global user.email "takabatakekoichi@gmail.com"'
 	su neovimuser -c 'cd /app && git config --global user.name "takabatake"'
-	su neovimuser -c 'cd /app && bundle install'
-	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs'
-	su neovimuser -c 'cd /app && rbs collection install'
-	su neovimuser -c 'cd /app && yard gems'
+	su neovimuser -c 'cd /app && bundle install & wait'
+	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs & wait'
+	su neovimuser -c 'cd /app && rbs collection install & wait'
+	su neovimuser -c 'cd /app && yard gems & wait'
 fi
 
 if command -v updatedb
@@ -50,6 +50,6 @@ fi
 apt-get install -y default-mysql-server
 cd /tmp
 mkdir -p /etc/apt/keyrings
-curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --no-tty --dearmor -o /etc/apt/keyrings/charm.gpg
 echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
 apt update -y && apt install glow -y
