@@ -6,8 +6,7 @@ su - neovimuser -c 'mkdir /home/neovimuser/.config'
 cp -R helpers/installers/config-nvim /home/neovimuser/.config/nvim
 chown neovimuser:neovimuser -R /home/neovimuser/.config/nvim
 
-su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa' &
-wait
+su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa & wait'
 
 if [ -d "/usr/local/bundle" ]
 then
