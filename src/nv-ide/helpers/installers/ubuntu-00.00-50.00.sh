@@ -6,7 +6,9 @@ su - neovimuser -c 'mkdir /home/neovimuser/.config'
 cp -R helpers/installers/config-nvim /home/neovimuser/.config/nvim
 chown neovimuser:neovimuser -R /home/neovimuser/.config/nvim
 
-su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa'
+su - neovimuser -c 'nvim --headless "+Lazy! sync" +qa' &
+wait
+
 if [ -d "/usr/local/bundle" ]
 then
 	rm -rf /usr/local/bundle
@@ -18,8 +20,6 @@ fi
 
 if [ -d "/app" ]
 then
-	mkdir /app/.bundle
-	touch /app/.bundle/config
 	chown neovimuser:neovimuser -R /app
 fi
 
@@ -41,7 +41,7 @@ then
 	su neovimuser -c 'cd /app && bundle install'
 	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs'
 	su neovimuser -c 'cd /app && rbs collection init && rbs collection install'
-	# su neovimuser -c 'cd /app && yard gems'
+	su neovimuser -c 'cd /app && yard gems'
 fi
 
 if command -v updatedb
