@@ -2,6 +2,7 @@ return {
   --[[ COLORSCHEME ]]
   {
     "folke/tokyonight.nvim",
+    -- "rose-pine/neovim", name = "rose-pine",
     -- "loctvl842/monokai-pro.nvim",
     -- "rebelot/kanagawa.nvim",
     -- "sainnhe/gruvbox-material",
@@ -15,6 +16,7 @@ return {
     priority = 1000,
     config = function()
       require('config.colorschemes.tokyonight')
+      -- require('config.colorschemes.rosepine')
       -- require('config.colorschemes.monokai_pro')
       -- require('config.colorschemes.kanagawa')
       -- require('config.colorschemes.gruvbox_material')
@@ -216,15 +218,20 @@ return {
   {
     "folke/which-key.nvim",
     event = 'VeryLazy',
-    config = function()
-      require("which-key").setup({
-        timeoutlen = 500,
-        delay = 500,
-        win = {
-          border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-        },
-      })
-    end,
+    opts = {
+      win = {
+        border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
+      },
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
   },
   {
     "airblade/vim-rooter",
@@ -262,6 +269,11 @@ return {
   {
     "kazhala/close-buffers.nvim",
     event = 'VeryLazy',
+    keys = {
+      { "<leader>bd",  ":BDelete this<CR>",    mode = { "n" }, desc = "Delete actual buffer", },
+      { "<leader>bda", ":BDelete! all<CR>",    mode = { "n" }, desc = "Delete all buffers", },
+      { "<leader>bdh", ":BDelete! hidden<CR>", mode = { "n" }, desc = "Delete hidden buffers", },
+    }
   },
   {
     "folke/twilight.nvim",
@@ -273,8 +285,15 @@ return {
   },
   {
     "nvim-tree/nvim-web-devicons",
+    lazy = false,
     event = 'VeryLazy',
+    config = function()
+      require("nvim-web-devicons").setup {
+        default = true,
+      }
+    end
   },
+  { 'echasnovski/mini.nvim',   version = '*', lazy = false },
   {
     "chrisgrieser/nvim-spider",
     event = 'VeryLazy',
@@ -474,7 +493,12 @@ return {
   },
   {
     "ton/vim-bufsurf",
-    event = 'VeryLazy'
+    event = 'VeryLazy',
+    keys = {
+      { "<leader>bn", ":BufSurfForward<CR>", mode = { "n" }, desc = "Surf forward", },
+      { "<leader>bp", ":BufSurfBack<CR>",    mode = { "n" }, desc = "Surf back", },
+      { "<leader>bl", ":BufSurfList<CR>",    mode = { "n" }, desc = "Surf list", },
+    }
   },
   {
     "brenoprata10/nvim-highlight-colors",
@@ -572,7 +596,7 @@ return {
   {
     "yetone/avante.nvim",
     lazy = false,
-    -- event = "VeryLazy",
+    event = "VeryLazy",
     version = false,
     opts = {
       provider = "openai",
@@ -611,7 +635,7 @@ return {
         },
       },
       {
-        -- Make sure to setup it properly if you have lazy=true
+        -- Make sure to set this up properly if you have lazy=true
         'MeanderingProgrammer/render-markdown.nvim',
         opts = {
           file_types = { "markdown", "Avante" },
@@ -675,10 +699,6 @@ return {
     keys = {
       { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
     }
-  },
-  {
-    "nvim-tree/nvim-web-devicons",
-    lazy = false,
   },
   {
     "sindrets/diffview.nvim",
@@ -814,23 +834,10 @@ return {
     lazy = false,
   },
   {
-    "SmiteshP/nvim-gps",
-    config = function()
-      require("nvim-gps").setup({
-        icons = {
-          ["class-name"] = ' ', -- Classes and class-like objects
-          ["function-name"] = ' ', -- Functions
-          ["method-name"] = ' ', -- Methods (functions inside class-like objects)
-          ["container-name"] = '⛶ ', -- Containers (example: lua tables)
-          ["tag-name"] = '炙' -- Tags (example: html tags)
-        }
-      })
-    end
-  },
-  {
     "L3MON4D3/LuaSnip",
     -- follow latest release.
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    build = "make install_jsregexp"
   },
   { 'saadparwaiz1/cmp_luasnip' },
   {
@@ -845,9 +852,49 @@ return {
       require("navigator").setup({
         mason = true,
         lsp = {
-          disable_lsp = 'all'
+          disable_lsp = "all"
         }
       })
+
+      function CustomDefinitionPreview()
+        print("custom definition")
+        local clients = vim.lsp.get_active_clients()
+        local preferred_client = nil
+
+        -- ruby-lsp を優先
+        for _, client in ipairs(clients) do
+          if client.name == "ruby-lsp" then
+            preferred_client = client
+            break
+          end
+        end
+
+        -- ruby-lsp が見つからない場合、他の LSP を使用
+        if not preferred_client then
+          for _, client in ipairs(clients) do
+            if client.name ~= "rubocop" then
+              preferred_client = client
+              break
+            end
+          end
+        end
+
+        if preferred_client then
+          vim.lsp.buf_request(0, 'textDocument/definition', vim.lsp.util.make_position_params(),
+            function(err, result, ctx, config)
+              if err == nil and result ~= nil then
+                require("navigator.definition").definition_preview(result)
+              else
+                print("Definition not found.")
+              end
+            end, preferred_client.id)
+        else
+          print("No suitable LSP server found for definition.")
+        end
+      end
+
+      -- キーマッピングを設定
+      vim.api.nvim_set_keymap('n', 'gp', '<Cmd>lua CustomDefinitionPreview()<CR>', { noremap = true, silent = true })
     end,
   },
   {
@@ -857,6 +904,58 @@ return {
   {
     'kolen/tree-sitter-slim',
     lazy = false
+  },
+  {
+    "jceb/vim-textobj-uri",
+    dependencies = { "kana/vim-textobj-user" },
+    config = function()
+      -- カスタムマッピングを設定
+      vim.api.nvim_set_keymap('n', '<leader>o', ':lua OpenUriUnderCursor()<CR>', { noremap = true, silent = true })
+
+      -- OpenUriUnderCursor 関数を定義
+      _G.OpenUriUnderCursor = function()
+        -- カーソル下の URI を取得
+        local line = vim.fn.getline('.')
+        local col = vim.fn.col('.')
+        local start = col
+        local finish = col
+
+        -- 行の中でリンクの開始と終了を見つける
+        while start > 0 and line:sub(start, start):match("[%w%p]") do
+          start = start - 1
+        end
+        while finish <= #line and line:sub(finish, finish):match("[%w%p]") do
+          finish = finish + 1
+        end
+
+        -- URI を抽出
+        local uri = line:sub(start + 1, finish - 1)
+
+        -- Markdown のリンク形式を処理
+        uri = uri:match("%((file://[^)]+)%)") or uri
+
+        if uri and uri:match('^file://') then
+          local file = uri:match('file://([^#]+)')
+          local line_num = uri:match('#L(%d+)')
+
+          -- プレビューウィンドウかどうかを確認
+          if vim.fn.win_gettype() == 'preview' then
+            vim.cmd('pclose')   -- プレビューウィンドウを閉じる
+            vim.cmd('wincmd w') -- 別のウィンドウに移動
+          end
+
+          -- コマンドを同期的に実行
+          vim.schedule(function()
+            vim.cmd('tabnew ' .. file) -- 新しいタブでファイルを開く
+            if line_num then
+              vim.cmd(':' .. line_num)
+            end
+          end)
+        else
+          print("Not a file URI")
+        end
+      end
+    end
   },
   -- {
   --   "OXY2DEV/markview.nvim",

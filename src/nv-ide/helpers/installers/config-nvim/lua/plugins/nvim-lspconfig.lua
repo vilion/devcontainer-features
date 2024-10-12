@@ -44,6 +44,69 @@ local function add_buffer_autocmd(augroup, bufnr, autocmds)
 end
 
 function M.on_attach(client, bufnr)
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.lsp.commands["rubyLsp.openFile"] = function(command)
+    print("rubyLsp.openFile called") -- デバッグ用メッセージ
+    if not command.arguments or not command.arguments[1] then
+      vim.notify("No arguments provided for rubyLsp.openFile", vim.log.levels.ERROR)
+      return
+    end
+
+    -- URIを取得
+    local uris = command.arguments[1]
+    if not uris or #uris == 0 then
+      vim.notify("No URIs provided for rubyLsp.openFile", vim.log.levels.ERROR)
+      return
+    end
+
+    -- ファイル選択のプロンプトを表示
+    vim.ui.select(uris, {
+      prompt = 'Select a file to open:',
+      format_item = function(uri)
+        return vim.uri_to_fname(uri)
+      end,
+    }, function(selected_uri)
+      if not selected_uri then
+        vim.notify("No file selected", vim.log.levels.WARN)
+        return
+      end
+
+      local bufnr = vim.uri_to_bufnr(selected_uri)
+      vim.api.nvim_buf_set_option(bufnr, 'buflisted', true)
+      vim.api.nvim_set_current_buf(bufnr)
+    end)
+  end
+
+  vim.lsp.commands["rubyLsp.runTest"] = function(command)
+    if not command.arguments or not command.arguments[1] then
+      vim.notify("No arguments provided for rubyLsp.runTest", vim.log.levels.ERROR)
+      return
+    end
+
+    local test_name = command.arguments[1]
+    local cmd = { "bundle", "exec", "rspec", test_name }
+
+    vim.fn.jobstart(cmd, {
+      on_stdout = function(_, data)
+        for _, line in ipairs(data) do
+          print(line)
+        end
+      end,
+      on_stderr = function(_, data)
+        for _, line in ipairs(data) do
+          vim.notify(line, vim.log.levels.ERROR)
+        end
+      end,
+      on_exit = function(_, code)
+        if code == 0 then
+          vim.notify("Test passed", vim.log.levels.INFO)
+        else
+          vim.notify("Test failed", vim.log.levels.ERROR)
+        end
+      end,
+    })
+  end
+
   vim.api.nvim_buf_create_user_command(bufnr, "ShowRubyDeps", function(opts)
       local params = vim.lsp.util.make_text_document_params()
       local showAll = opts.args == "all"
@@ -73,6 +136,62 @@ function M.on_attach(client, bufnr)
   local navic = require("nvim-navic")
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local bufopts = { noremap = true, silent = true, buffer = bufnr }
+  -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  -- vim.keymap.set('n', '<space>wl', function()
+  --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  -- end, bufopts)
+  -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+  -- vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+  -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+  -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+  -- vim.keymap.set('n', '<space>gW', vim.lsp.buf.workspace_symbol, bufopts)
+  -- vim.keymap.set('n', '<space>ds', vim.lsp.buf.document_symbol, bufopts)
+
+  vim.api.nvim_buf_create_user_command(bufnr, "RunCodeLensAction", function()
+    local codelens = vim.lsp.codelens.get(bufnr)
+    if not codelens or vim.tbl_isempty(codelens) then
+      print("No CodeLens actions available")
+      return
+    end
+
+    vim.ui.select(codelens, {
+      prompt = 'Select a CodeLens action to run:',
+      format_item = function(item)
+        return item.command.title
+      end,
+    }, function(selected_action)
+      if not selected_action then
+        print("No action selected")
+        return
+      end
+
+      print(vim.inspect(selected_action.command)) -- デバッグ用: commandの内容を表示
+
+      -- デバッグ用メッセージ
+      print("Executing command: " .. selected_action.command.command)
+
+      -- コマンドを実行
+      local success, err = pcall(vim.lsp.buf.execute_command, selected_action.command)
+
+      -- デバッグ用メッセージ
+      if success then
+        print("Command executed successfully")
+      else
+        print("Error executing command: " .. err)
+      end
+    end)
+  end, { desc = "Select and run a CodeLens action" })
 
   if client.server_capabilities.documentSymbolProvider then
     -- if not navic.is_attached(bufnr) then
@@ -185,38 +304,6 @@ function M.config()
     },
   }
 
-  ---@diagnostic disable-next-line: duplicate-set-field
-  vim.lsp.commands["rubyLsp.openFile"] = function(command)
-    if not command.arguments or not command.arguments[1] then
-      vim.notify("No arguments provided for rubyLsp.openFile", vim.log.levels.ERROR)
-      return
-    end
-
-    -- URIを取得
-    local uris = command.arguments[1]
-    if not uris or #uris == 0 then
-      vim.notify("No URIs provided for rubyLsp.openFile", vim.log.levels.ERROR)
-      return
-    end
-
-    -- ファイル選択のプロンプトを表示
-    vim.ui.select(uris, {
-      prompt = 'Select a file to open:',
-      format_item = function(uri)
-        return vim.uri_to_fname(uri)
-      end,
-    }, function(selected_uri)
-      if not selected_uri then
-        vim.notify("No file selected", vim.log.levels.WARN)
-        return
-      end
-
-      local bufnr = vim.uri_to_bufnr(selected_uri)
-      vim.api.nvim_buf_set_option(bufnr, 'buflisted', true)
-      vim.api.nvim_set_current_buf(bufnr)
-    end)
-  end
-
   mason_lspconfig.setup_handlers {
     -- The first entry (without a key) will be the default handler
     -- and will be called for each installed server that doesn't have
@@ -242,62 +329,62 @@ function M.config()
         on_attach = M.on_attach,
         cmd = { "bundle", "exec", "solargraph", "stdio" },
         capabilities,
-        -- settings = {
-        --   solargraph = {
-        --     completion = true,
-        --     hover = true,
-        --     symbols = true,
-        --     references = true,
-        --     rename = true,
-        --     formatting = true,
-        --     diagnostics = true,
-        --     codeActions = true,
-        --     foldingRange = true,
-        --     selectionRange = true,
-        --     documentHighlight = true,
-        --     documentLink = true,
-        --     documentSymbol = true,
-        --     workspaceSymbol = true,
-        --     codeLens = true,
-        --     semanticTokens = true,
-        --     inlayHints = true,
-        --     callHierarchy = true,
-        --     linkedEditingRange = true,
-        --     typeHierarchy = true,
-        --     inlineValue = true,
-        --     moniker = true,
-        --     declaration = true,
-        --     definition = true,
-        --     typeDefinition = true,
-        --     implementation = true,
-        --     signatureHelp = true,
-        --     hoverProvider = true,
-        --     completionProvider = {
-        --       triggerCharacters = { ".", ":", ">", "<", "=", "-", "(", "[", "{", " " },
-        --       resolveProvider = true,
-        --     },
-        --     documentFormattingProvider = true,
-        --     documentRangeFormattingProvider = true,
-        --     documentOnTypeFormattingProvider = {
-        --       firstTriggerCharacter = ";",
-        --       moreTriggerCharacter = { "}", "]", ")" },
-        --     },
-        --     renameProvider = {
-        --       prepareProvider = true,
-        --     },
-        --     codeActionProvider = {
-        --       codeActionKinds = { "quickfix", "refactor", "source.organizeImports" },
-        --     },
-        --     executeCommandProvider = true,
-        --     workspace = {
-        --       workspaceFolders = {
-        --         supported = true,
-        --         changeNotifications = true,
-        --       },
-        --     },
-        --     experimental = {},
-        --   }
-        -- }
+        settings = {
+          solargraph = {
+            completion = false,
+            hover = false,
+            symbols = false,
+            references = true,
+            rename = false,
+            formatting = false,
+            diagnostics = false,
+            codeActions = false,
+            foldingRange = false,
+            selectionRange = false,
+            documentHighlight = false,
+            documentLink = false,
+            documentSymbol = false,
+            workspaceSymbol = false,
+            codeLens = false,
+            semanticTokens = false,
+            inlayHints = false,
+            callHierarchy = true,
+            linkedEditingRange = false,
+            typeHierarchy = false,
+            inlineValue = false,
+            moniker = true,
+            declaration = false,
+            definition = false,
+            typeDefinition = false,
+            implementation = false,
+            signatureHelp = false,
+            hoverProvider = false,
+            completionProvider = {
+              triggerCharacters = { ".", ":", ">", "<", "=", "-", "(", "[", "{", " " },
+              resolveProvider = false,
+            },
+            documentFormattingProvider = false,
+            documentRangeFormattingProvider = false,
+            documentOnTypeFormattingProvider = {
+              firstTriggerCharacter = ";",
+              moreTriggerCharacter = { "}", "]", ")" },
+            },
+            renameProvider = {
+              prepareProvider = false,
+            },
+            codeActionProvider = {
+              codeActionKinds = { "quickfix", "refactor", "source.organizeImports" },
+            },
+            executeCommandProvider = false,
+            workspace = {
+              workspaceFolders = {
+                supported = false,
+                changeNotifications = false,
+              },
+            },
+            experimental = {},
+          }
+        }
       })
     end,
     ["rust_analyzer"] = function(server_name)
@@ -341,8 +428,19 @@ function M.config()
     end,
     ["ruby_lsp"] = function()
       local util = require("lspconfig.util")
+      lspconfig.ruby_lsp.commands = {
+        FormatRuby = {
+          function()
+            vim.lsp.buf.format({
+              name = "ruby_lsp",
+              async = true,
+            })
+          end,
+          description = "Format using ruby-lsp",
+        },
+      }
       lspconfig.ruby_lsp.setup({
-        cmd = { "bundle", "exec", "ruby-lsp" },
+        cmd = { "ruby-lsp" },
         on_attach = M.on_attach,
         capabilities,
         filetypes = { "ruby", "erb" },
@@ -363,10 +461,11 @@ function M.config()
             "inlayHint",
             "onTypeFormatting",
             "selectionRanges",
-            -- "semanticHighlighting",
+            "semanticHighlighting",
             "signatureHelp",
             "typeHierarchy",
-            -- "workspaceSymbol"
+            "workspaceSymbol",
+            "references"
           }
         }
       })
@@ -541,7 +640,7 @@ function M.config()
       lspconfig.ts_ls.setup({
         on_attach = M.on_attach,
         capabilities,
-        filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+        filetypes = { "tsx", "typescript", "typescriptreact", "typescript.tsx" },
         cmd = { "typescript-language-server", "--stdio" },
         settings = {
           completions = {

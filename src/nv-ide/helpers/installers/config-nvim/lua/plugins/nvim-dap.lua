@@ -5,12 +5,14 @@ local M = {
     "nvim-neotest/nvim-nio",
     "rcarriga/nvim-dap-ui",
     "theHamsta/nvim-dap-virtual-text",
+    "suketa/nvim-dap-ruby"
   }
 }
 function M.config()
+  require("dap-ruby").setup()
   local dap, dapui = require("dap")
 
-  vim.fn.sign_define('DapBreakpoint', {text='', texthl='error', linehl='', numhl=''})
+  vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'error', linehl = '', numhl = '' })
   -- ADAPTERS
   dap.adapters.node2 = {
     type = 'executable',
@@ -37,24 +39,25 @@ function M.config()
       request = 'attach',
       restart = true,
       -- port = 9229
-      processId = require'dap.utils'.pick_process,
+      processId = require 'dap.utils'.pick_process,
     },
   }
-  dap.adapters.ruby = {
-    type = 'executable';
-    command = 'bundle';
-    args = {'exec', 'readapt', 'stdio'};
-  }
+  -- dap.adapters.ruby = {
+  --   type = 'executable';
+  --   command = 'bundle';
+  --   args = {'exec', 'readapt', 'stdio'};
+  -- }
 
-  dap.configurations.ruby = {
-    {
-      type = 'ruby';
-      request = 'launch';
-      name = 'Rails';
-      program = 'bundle';
-      programArgs = {'exec', 'rails', 's'};
-      useBundler = true;
-    },
-  }
+  -- dap.configurations.ruby = {
+  --   {
+  --     type = 'ruby';
+  --     request = 'launch';
+  --     name = 'Rails';
+  --     program = 'bundle';
+  --     programArgs = {'exec', 'rails', 's'};
+  --     useBundler = true;
+  --   },
+  -- }
 end
+
 return M
