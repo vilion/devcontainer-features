@@ -36,10 +36,8 @@ if [ $RIPGREP = "true" ]; then
 	pkgs+=("ripgrep")
 fi
 
-if [ $UNZIP = "true" ]; then
-	pkgs+=("unzip")
-fi
-
+pkgs+=("unzip")
+pkgs+=("libreadline-dev")
 pkgs+=("lua5.4")
 pkgs+=("fzf")
 pkgs+=("luajit")
@@ -59,11 +57,11 @@ apt install -y "${pkgs[@]}"
 wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
 	&& tar -xzpf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
-	&& ./configure --with-lua-include=/usr/include/lua5.1 --with-lua-bin=/usr/bin \
+	&& ./configure --with-lua-include=/usr/include/lua5.4 --with-lua-bin=/usr/bin \
         && make \
         && make install
 
-luarocks config variables.LUA_INCDIR /usr/include/lua5.1
+luarocks config variables.LUA_INCDIR /usr/include/lua5.4
 # luarocks install jsregexp
 
 cd /tmp
