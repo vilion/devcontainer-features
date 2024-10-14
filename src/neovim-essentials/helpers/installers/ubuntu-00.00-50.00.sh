@@ -51,6 +51,10 @@ pkgs+=("fonts-dejavu")
 pkgs+=("fonts-freefont-ttf")
 pkgs+=("upower")
 pkgs+=("liblua5.4-dev")
+pkgs+=("opam")
+opam init -y
+opam switch create 4.14.2 -y
+eval $(opam env --switch=4.14.2)
 
 cd /tmp
 apt install -y "${pkgs[@]}"
@@ -124,10 +128,11 @@ wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
 	&& make prefix=/usr/local install
 
 cd /tmp
-wget https://github.com/bcpierce00/unison/releases/download/v2.53.5/unison-2.53.5-ubuntu-x86_64.tar.gz \
-	&& tar -xzf unison-2.53.5-ubuntu-x86_64.tar.gz \
-	&& cp unison-2.53.5-ubuntu-x86_64/bin/* /usr/local/bin/ \
-	&& cp --recursive --update --verbose unison-2.53.5-ubuntu-x86_64/man/* /usr/local/man
+wget https://github.com/bcpierce00/unison/archive/v2.53.5.tar.gz \
+	&& tar -xzf v2.53.5.tar.gz \
+	&& cd unison-2.53.5
+        && make
+        && make install
 
 apt install xsel xclip wl-clipboard -y
 apt-get install -y xsel xclip wl-clipboard
