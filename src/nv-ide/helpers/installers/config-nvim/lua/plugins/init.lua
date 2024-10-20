@@ -514,9 +514,36 @@ return {
     end
   },
   {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",  -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
+
+      -- Only one of these is needed.
+      "nvim-telescope/telescope.nvim", -- optional
+    },
+    config = function()
+      require('neogit').setup({
+        integrations = {
+          diffview = true, -- diffview.nvimと連携する場合
+          telescope = true
+        },
+        disable_builtin_notifications = false,
+        disable_commit_confirmation = false,
+        signs = {
+          section = { "▸", "▾" },
+          item = { "▸", "▾" },
+          hunk = { "", "" },
+        },
+      })
+    end
+  },
+  {
     "sindrets/diffview.nvim",
-    lazy = true,
-    cmd = { "DiffviewOpen", "DiffviewClose" },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    cmd = {
+      'DiffviewClose', 'DiffviewOpen'
+    },
     keys = {
       {
         "<leader>gd",
@@ -955,6 +982,18 @@ return {
           print("Not a file URI")
         end
       end
+    end
+  },
+  {
+    "djoshea/vim-autoread",
+    event = "VeryLazy",
+    config = function()
+      vim.cmd([[
+        augroup auto_read
+          autocmd!
+          autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+        augroup END
+      ]])
     end
   },
   -- {

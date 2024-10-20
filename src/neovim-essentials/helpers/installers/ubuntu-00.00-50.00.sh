@@ -66,6 +66,16 @@ wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
 luarocks config variables.LUA_INCDIR /usr/include/lua5.4
 # luarocks install jsregexp
 
+if dpkg -l | grep -q "^ii  git "; then
+    apt remove -y git
+fi
+cd /tmp
+wget https://github.com/git/git/archive/refs/tags/v2.47.0.tar.gz \
+	&& tar -xzf v2.47.0.tar.gz \
+	&& cd git-* \
+	&& make prefix=/usr/local all \
+	&& make prefix=/usr/local install
+
 cd /tmp
 rm -rf /tmp/ctags
 git clone https://github.com/universal-ctags/ctags.git
@@ -80,6 +90,9 @@ cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt install -y nodejs
 
+id -u neovimuser &>/dev/null && userdel -r neovimuser
+adduser --uid 1000 neovimuser
+
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 if [ "$(uname -m)" = "aarch64" ]; then
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
@@ -89,13 +102,16 @@ fi
 tar xf lazygit.tar.gz lazygit
 install lazygit /usr/local/bin
 
-cat << 'EOFLAZY' >> /home/neovimuser/.config/lazygit/config.yml
+if [ ! -d "/home/neovimuser/.config/lazygit" ]; then
+    mkdir -p /home/neovimuser/.config/lazygit
+    touch /home/neovimuser/.config/lazygit/config.yml
+    chown -R neovimuser:neovimuser /home/neovimuser/.config
+fi
+
+cat << 'EOFLAZY' > /home/neovimuser/.config/lazygit/config.yml
 os:
   editPreset: "nvim-remote"
 EOFLAZY
-
-id -u neovimuser &>/dev/null && userdel -r neovimuser
-adduser --uid 1000 neovimuser
 
 pip3 install pynvim
 pip3 install pre-commit
@@ -123,12 +139,6 @@ apt-get install -y gettext \
 # wget https://storage.googleapis.com/chrome-for-testing-public/128.0.6613.119/linux64/chromedriver-linux64.zip
 # unzip chromedriver-linux64.zip
 # cp chromedriver-linux64/chromedriver /usr/bin/
-
-wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
-	&& tar -xzf v2.46.0.tar.gz \
-	&& cd git-* \
-	&& make prefix=/usr/local all \
-	&& make prefix=/usr/local install
 
 opam init --disable-sandboxing --yes
 opam switch create 4.14.2 --yes
