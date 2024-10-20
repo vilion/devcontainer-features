@@ -2,7 +2,9 @@
 
 set -eux
 
-su - neovimuser -c 'mkdir /home/neovimuser/.config'
+if [ ! -d "/home/neovimuser/.config" ]; then
+	su - neovimuser -c 'mkdir /home/neovimuser/.config'
+fi
 cp -R helpers/installers/config-nvim /home/neovimuser/.config/nvim
 chown neovimuser:neovimuser -R /home/neovimuser/.config/nvim
 

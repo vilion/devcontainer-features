@@ -297,7 +297,7 @@ function M.config()
       'lua_ls',
       'prismals',
       'solang',
-      'solargraph',
+      -- 'solargraph',
       'ruby_lsp',
       'rubocop',
       'efm'
@@ -324,69 +324,69 @@ function M.config()
         filetypes = { "html" }
       })
     end,
-    ["solargraph"] = function()
-      lspconfig.solargraph.setup({
-        on_attach = M.on_attach,
-        cmd = { "bundle", "exec", "solargraph", "stdio" },
-        capabilities,
-        settings = {
-          solargraph = {
-            completion = false,
-            hover = false,
-            symbols = false,
-            references = true,
-            rename = false,
-            formatting = false,
-            diagnostics = false,
-            codeActions = false,
-            foldingRange = false,
-            selectionRange = false,
-            documentHighlight = false,
-            documentLink = false,
-            documentSymbol = false,
-            workspaceSymbol = false,
-            codeLens = false,
-            semanticTokens = false,
-            inlayHints = false,
-            callHierarchy = true,
-            linkedEditingRange = false,
-            typeHierarchy = false,
-            inlineValue = false,
-            moniker = true,
-            declaration = false,
-            definition = false,
-            typeDefinition = false,
-            implementation = false,
-            signatureHelp = false,
-            hoverProvider = false,
-            completionProvider = {
-              triggerCharacters = { ".", ":", ">", "<", "=", "-", "(", "[", "{", " " },
-              resolveProvider = false,
-            },
-            documentFormattingProvider = false,
-            documentRangeFormattingProvider = false,
-            documentOnTypeFormattingProvider = {
-              firstTriggerCharacter = ";",
-              moreTriggerCharacter = { "}", "]", ")" },
-            },
-            renameProvider = {
-              prepareProvider = false,
-            },
-            codeActionProvider = {
-              codeActionKinds = { "quickfix", "refactor", "source.organizeImports" },
-            },
-            executeCommandProvider = false,
-            workspace = {
-              workspaceFolders = {
-                supported = false,
-                changeNotifications = false,
-              },
-            },
-            experimental = {},
-          }
-        }
-      })
-    end,
+    -- ["solargraph"] = function()
+    --   lspconfig.solargraph.setup({
+    --     on_attach = M.on_attach,
+    --     cmd = { "bundle", "exec", "solargraph", "stdio" },
+    --     capabilities,
+    --     settings = {
+    --       solargraph = {
+    --         completion = false,
+    --         hover = false,
+    --         symbols = false,
+    --         references = true,
+    --         rename = false,
+    --         formatting = false,
+    --         diagnostics = false,
+    --         codeActions = false,
+    --         foldingRange = false,
+    --         selectionRange = false,
+    --         documentHighlight = false,
+    --         documentLink = false,
+    --         documentSymbol = false,
+    --         workspaceSymbol = false,
+    --         codeLens = false,
+    --         semanticTokens = false,
+    --         inlayHints = false,
+    --         callHierarchy = true,
+    --         linkedEditingRange = false,
+    --         typeHierarchy = false,
+    --         inlineValue = false,
+    --         moniker = true,
+    --         declaration = false,
+    --         definition = false,
+    --         typeDefinition = false,
+    --         implementation = false,
+    --         signatureHelp = false,
+    --         hoverProvider = false,
+    --         completionProvider = {
+    --           triggerCharacters = { ".", ":", ">", "<", "=", "-", "(", "[", "{", " " },
+    --           resolveProvider = false,
+    --         },
+    --         documentFormattingProvider = false,
+    --         documentRangeFormattingProvider = false,
+    --         documentOnTypeFormattingProvider = {
+    --           firstTriggerCharacter = ";",
+    --           moreTriggerCharacter = { "}", "]", ")" },
+    --         },
+    --         renameProvider = {
+    --           prepareProvider = false,
+    --         },
+    --         codeActionProvider = {
+    --           codeActionKinds = { "quickfix", "refactor", "source.organizeImports" },
+    --         },
+    --         executeCommandProvider = false,
+    --         workspace = {
+    --           workspaceFolders = {
+    --             supported = false,
+    --             changeNotifications = false,
+    --           },
+    --         },
+    --         experimental = {},
+    --       }
+    --     }
+    --   })
+    -- end,
     ["rust_analyzer"] = function(server_name)
       lspconfig.rust_analyzer.setup({
         on_attach = M.on_attach,
@@ -440,7 +440,7 @@ function M.config()
         },
       }
       lspconfig.ruby_lsp.setup({
-        cmd = { "ruby-lsp" },
+        cmd = { "/usr/local/bundle/gems/ruby-lsp-0.20.1/exe/ruby-lsp" },
         on_attach = M.on_attach,
         capabilities,
         filetypes = { "ruby", "erb" },
@@ -573,9 +573,12 @@ function M.config()
         cmd = { "bundle", "exec", "rubocop", "--lsp" },
         on_attach = M.on_attach,
         capabilities,
-        filetypes = { "ruby" },
+        filetypes = { "ruby", "erb" },
         settings = {
           rubocop = {
+            diagnostics = {
+              enable = true,
+            },
             lint = {
               enabled = true,
             },

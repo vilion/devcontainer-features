@@ -1,15 +1,12 @@
 {
   "name": "NV-IDE",
   "id": "nv-ide",
-  "version": "0.0.67",
+  "version": "0.0.69",
   "description": "Provides nv-ide features for devcontainers",
   "options": {
     "version": {
       "type": "string",
-      "proposals": [
-        "v3.43.5",
-        "v3.43.4"
-      ],
+      "proposals": ["v3.43.5", "v3.43.4"],
       "default": "v3.43.5",
       "description": "Select the astronvim version you want to install as present in GitHub Releases"
     }
