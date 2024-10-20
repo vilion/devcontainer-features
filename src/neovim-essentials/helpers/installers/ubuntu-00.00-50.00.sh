@@ -89,7 +89,12 @@ fi
 tar xf lazygit.tar.gz lazygit
 install lazygit /usr/local/bin
 
-cat << 'EOFLAZY' >> /home/neovimuser/.config/lazygit/config.yml
+if [ ! -d "/home/neovimuser/.config/lazygit" ]; then
+    mkdir -p /home/neovimuser/.config/lazygit
+    touch /home/neovimuser/.config/lazygit/config.yml
+fi
+
+cat << 'EOFLAZY' > /home/neovimuser/.config/lazygit/config.yml
 os:
   editPreset: "nvim-remote"
 EOFLAZY
@@ -124,8 +129,8 @@ apt-get install -y gettext \
 # unzip chromedriver-linux64.zip
 # cp chromedriver-linux64/chromedriver /usr/bin/
 
-wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
-	&& tar -xzf v2.46.0.tar.gz \
+wget https://github.com/git/git/archive/refs/tags/v2.59.0.tar.gz \
+	&& tar -xzf v2.59.0.tar.gz \
 	&& cd git-* \
 	&& make prefix=/usr/local all \
 	&& make prefix=/usr/local install
