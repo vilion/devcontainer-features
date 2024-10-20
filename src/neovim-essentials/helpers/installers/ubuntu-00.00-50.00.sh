@@ -80,6 +80,9 @@ cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt install -y nodejs
 
+id -u neovimuser &>/dev/null && userdel -r neovimuser
+adduser --uid 1000 neovimuser
+
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 if [ "$(uname -m)" = "aarch64" ]; then
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
@@ -89,13 +92,15 @@ fi
 tar xf lazygit.tar.gz lazygit
 install lazygit /usr/local/bin
 
-cat << 'EOFLAZY' >> /home/neovimuser/.config/lazygit/config.yml
+if [ ! -d "/home/neovimuser/.config/lazygit" ]; then
+    mkdir -p /home/neovimuser/.config/lazygit
+    touch /home/neovimuser/.config/lazygit/config.yml
+fi
+
+cat << 'EOFLAZY' > /home/neovimuser/.config/lazygit/config.yml
 os:
   editPreset: "nvim-remote"
 EOFLAZY
-
-id -u neovimuser &>/dev/null && userdel -r neovimuser
-adduser --uid 1000 neovimuser
 
 pip3 install pynvim
 pip3 install pre-commit
@@ -124,8 +129,8 @@ apt-get install -y gettext \
 # unzip chromedriver-linux64.zip
 # cp chromedriver-linux64/chromedriver /usr/bin/
 
-wget https://github.com/git/git/archive/refs/tags/v2.46.0.tar.gz \
-	&& tar -xzf v2.46.0.tar.gz \
+wget https://github.com/git/git/archive/refs/tags/v2.59.0.tar.gz \
+	&& tar -xzf v2.59.0.tar.gz \
 	&& cd git-* \
 	&& make prefix=/usr/local all \
 	&& make prefix=/usr/local install
