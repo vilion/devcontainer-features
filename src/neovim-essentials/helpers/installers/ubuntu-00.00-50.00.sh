@@ -89,6 +89,11 @@ fi
 tar xf lazygit.tar.gz lazygit
 install lazygit /usr/local/bin
 
+cat << 'EOFLAZY' >> /home/neovimuser/.config/lazygit/config.yml
+os:
+  editPreset: "nvim-remote"
+EOFLAZY
+
 id -u neovimuser &>/dev/null && userdel -r neovimuser
 adduser --uid 1000 neovimuser
 
