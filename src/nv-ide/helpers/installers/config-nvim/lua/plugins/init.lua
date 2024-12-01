@@ -1,33 +1,4 @@
 return {
-  --[[ COLORSCHEME ]]
-  {
-    "folke/tokyonight.nvim",
-    -- "rose-pine/neovim", name = "rose-pine",
-    -- "loctvl842/monokai-pro.nvim",
-    -- "rebelot/kanagawa.nvim",
-    -- "sainnhe/gruvbox-material",
-    -- "olimorris/onedarkpro.nvim",
-    -- "projekt0n/github-nvim-theme",
-    -- "Shatur/neovim-ayu",
-    -- "scottmckendry/cyberdream.nvim",
-    -- "e-q/okcolors.nvim", name = "okcolors",
-    -- enabled = false,
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require('config.colorschemes.tokyonight')
-      -- require('config.colorschemes.rosepine')
-      -- require('config.colorschemes.monokai_pro')
-      -- require('config.colorschemes.kanagawa')
-      -- require('config.colorschemes.gruvbox_material')
-      -- require('config.colorschemes.cyberdream')
-      -- vim.cmd [[colorscheme onedark]]
-      -- vim.cmd [[colorscheme github_dark_dimmed]]
-      -- vim.cmd [[colorscheme ayu-dark]]
-      -- vim.cmd [[colorscheme okcolors-smooth]]
-    end,
-  },
-  --[[ END COLORSCHEME ]]
   --[[ UI ]]
   {
     "nvim-lua/popup.nvim",
@@ -44,24 +15,24 @@ return {
   {
     "stevearc/dressing.nvim",
     lazy = false,
+    {
+      "ziontee113/icon-picker.nvim",
+      config = function()
+        require("icon-picker").setup({
+          disable_legacy_commands = true,
+        })
+      end,
+    }
   },
   {
     "onsails/lspkind-nvim",
     lazy = false,
   },
-  --[[ END UI ]]
-  {
-    "folke/neodev.nvim",
-    config = function()
-      require("neodev").setup({
-        -- add any options here, or leave empty to use the default settings
-      })
-    end
-  },
   {
     "hrsh7th/nvim-cmp",
     priority = 1000,
     lazy = false,
+    -- enable = false,
     dependencies = {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-vsnip",
@@ -73,7 +44,197 @@ return {
       "lukas-reineke/cmp-rg",
       "quangnguyen30192/cmp-nvim-tags",
       "rafamadriz/friendly-snippets",
+    },
+    config = function()
+      vim.api.nvim_exec([[
+        autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
+        autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
+        " autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global=1
+        " autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        " autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        " autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+        " autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+        " autocmd BufRead,BufNewFile *.md setlocal spell
+      ]], true)
+      --
+      local cmp = require 'cmp'
+      cmp.setup({ enable = false })
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+      --
+      -- -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline' }
+        })
+      })
+    end
+  },
+  {
+    'saghen/blink.cmp',
+    lazy = false, -- lazy loading handled internally
+    -- optional: provides snippets for the snippet source
+    dependencies = {
+      'rafamadriz/friendly-snippets',
+      "mikavilpas/blink-ripgrep.nvim",
+      "netmute/blink-cmp-ctags",
+      'folke/lazydev.nvim',
+      { 'saghen/blink.compat', version = '*', opts = { impersonate_nvim_cmp = true } },
+      "hrsh7th/cmp-calc",
+      "hrsh7th/cmp-cmdline",
+      "ray-x/cmp-treesitter",
+    },
+
+    -- use a release tag to download pre-built binaries
+    version = 'v0.*',
+    -- OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+    -- build = 'cargo build --release',
+    -- If you use nix, you can build from source using latest nightly rust with:
+    -- build = 'nix run .#build-plugin',
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      keymap = { preset = 'enter' },
+      highlight = {
+        -- sets the fallback highlight groups to nvim-cmp's highlight groups
+        -- useful for when your theme doesn't support blink.cmp
+        -- will be removed in a future release, assuming themes add support
+        use_nvim_cmp_as_default = true,
+      },
+      -- experimental auto-brackets support
+      accept = { auto_brackets = { enabled = true } },
+
+      -- experimental signature help support
+      trigger = { signature_help = { enabled = true } },
+      windows = { autocomplete = { selction = 'auto_insert' } },
+      sources = {
+        -- list of enabled providers
+        completion = {
+          enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev', 'ctags', 'calc', 'cmdline', 'treesitter' },
+        },
+        -- Please see https://github.com/Saghen/blink.compat for using `nvim-cmp` sources
+        providers = {
+          lsp = {
+            name = 'LSP',
+            module = 'blink.cmp.sources.lsp',
+
+            --- *All* of the providers have the following options available
+            --- NOTE: All of these options may be functions to get dynamic behavior
+            --- See the type definitions for more information
+            enabled = true,           -- whether or not to enable the provider
+            transform_items = nil,    -- function to transform the items before they're returned
+            should_show_items = true, -- whether or not to show the items
+            max_items = nil,          -- maximum number of items to return
+            min_keyword_length = 0,   -- minimum number of characters to trigger the provider
+            score_offset = 0,         -- boost/penalize the score of the items
+            override = nil,           -- override the source's functions
+            fallback_for = { "lazydev" }
+          },
+          path = {
+            name = 'Path',
+            module = 'blink.cmp.sources.path',
+            score_offset = 3,
+            opts = {
+              trailing_slash = false,
+              label_trailing_slash = true,
+              get_cwd = function(context) return vim.fn.expand(('#%d:p:h'):format(context.bufnr)) end,
+              show_hidden_files_by_default = false,
+            }
+          },
+          snippets = {
+            name = 'Snippets',
+            module = 'blink.cmp.sources.snippets',
+            score_offset = -3,
+            opts = {
+              friendly_snippets = true,
+              search_paths = { vim.fn.stdpath('config') .. '/snippets' },
+              global_snippets = { 'all' },
+              extended_filetypes = {},
+              ignored_filetypes = {},
+            }
+
+            --- Example usage for disabling the snippet provider after pressing trigger characters (i.e. ".")
+            -- enabled = function(ctx) return ctx ~= nil and ctx.trigger.kind == vim.lsp.protocol.CompletionTriggerKind.TriggerCharacter end,
+          },
+          buffer = {
+            name = 'Buffer',
+            module = 'blink.cmp.sources.buffer',
+            fallback_for = { 'lsp' },
+          },
+          ripgrep = {
+            module = "blink-ripgrep",
+            name = "Ripgrep",
+            -- the options below are optional, some default values are shown
+            ---@module "blink-ripgrep"
+            ---@type blink-ripgrep.Options
+            opts = {
+              -- For many options, see `rg --help` for an exact description of
+              -- the values that ripgrep expects.
+
+              -- the minimum length of the current word to start searching
+              -- (if the word is shorter than this, the search will not start)
+              prefix_min_len = 3,
+
+              -- The number of lines to show around each match in the preview window
+              context_size = 5,
+
+              -- The maximum file size that ripgrep should include in its search.
+              -- Useful when your project contains large files that might cause
+              -- performance issues.
+              -- Examples: "1024" (bytes by default), "200K", "1M", "1G"
+              max_filesize = "1M",
+            },
+          },
+          ctags = {
+            name = "Ctags",
+            module = "blink-cmp-ctags",
+            fallback_for = { "lsp" },
+          },
+          calc = {
+            name = 'calc', -- IMPORTANT: use the same name as you would for nvim-cmp
+            module = 'blink.compat.source',
+
+            -- all blink.cmp source config options work as normal:
+            score_offset = -3,
+          },
+          cmdline = {
+            name = 'cmdline', -- IMPORTANT: use the same name as you would for nvim-cmp
+            module = 'blink.compat.source',
+
+            -- all blink.cmp source config options work as normal:
+            score_offset = -3,
+          },
+          treesitter = {
+            name = 'treesitter', -- IMPORTANT: use the same name as you would for nvim-cmp
+            module = 'blink.compat.source',
+
+            -- all blink.cmp source config options work as normal:
+            score_offset = -3,
+          },
+          lazydev = { name = "LazyDev", module = "lazydev.integrations.blink" }
+        },
+      },
     }
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
+    },
   },
   {
     "nvim-treesitter/nvim-treesitter",
@@ -99,44 +260,6 @@ return {
       }
     end,
   },
-  {
-    "luukvbaal/statuscol.nvim",
-    lazy = false,
-    config = function()
-      require("statuscol").setup({
-        separator = " ",
-        setopt = true,
-      })
-    end
-  },
-  --{
-  --  'lukas-reineke/indent-blankline.nvim',
-  --  main = 'ibl',
-  --  event = 'UIEnter',
-  --  opts = {
-  --    exclude = {
-  --      -- stylua: ignore
-  --      filetypes = {
-  --        'dbout', 'neo-tree-popup', 'log', 'gitcommit',
-  --        'txt', 'help', 'NvimTree', 'git', 'flutterToolsOutline',
-  --        'undotree', 'markdown', 'norg', 'org', 'orgagenda',
-  --      },
-  --    },
-  --    indent = {
-  --      char = '│', -- ▏┆ ┊ 
-  --      tab_char = '│',
-  --    },
-  --    scope = {
-  --      char = '▎',
-  --    },
-  --  },
-  --  config = function(_, opts)
-  --    require('ibl').setup(opts)
-  --    local hooks = require('ibl.hooks')
-  --    hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
-  --    hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
-  --  end,
-  --},
   {
     "AckslD/nvim-neoclip.lua",
     config = function()
@@ -267,15 +390,6 @@ return {
     event = 'VeryLazy',
   },
   {
-    "kazhala/close-buffers.nvim",
-    event = 'VeryLazy',
-    keys = {
-      { "<leader>bd",  ":BDelete this<CR>",    mode = { "n" }, desc = "Delete actual buffer", },
-      { "<leader>bda", ":BDelete! all<CR>",    mode = { "n" }, desc = "Delete all buffers", },
-      { "<leader>bdh", ":BDelete! hidden<CR>", mode = { "n" }, desc = "Delete hidden buffers", },
-    }
-  },
-  {
     "folke/twilight.nvim",
     event = 'VeryLazy',
   },
@@ -334,12 +448,6 @@ return {
         "<cmd>lua require('grug-far').grug_far({ prefills = { search = vim.fn.expand('<cword>') } })<CR>",
         mode = { "n", "o", "x" },
       },
-      -- I use nvim-rip-substitute for file search and replace
-      -- {
-      --   "<leader>srf",
-      --   "<cmd>lua require('grug-far').grug_far({ prefills = { flags = vim.fn.expand('%') } })<CR>",
-      --   mode = { "n", "o", "x" },
-      -- },
     },
     config = function()
       require('grug-far').setup({
@@ -358,59 +466,6 @@ return {
   {
     "RRethy/vim-illuminate",
     event = 'VeryLazy',
-  },
-  {
-    "folke/edgy.nvim",
-    event = "BufReadPost",
-    opts = {
-      fix_win_height = vim.fn.has "nvim-0.10.0" == 0,
-      options = {
-        left = { size = 40 },
-        bottom = { size = 10 },
-        right = { size = 40 },
-        top = { size = 10 },
-      },
-      right = {
-      },
-      bottom = {
-        {
-          ft = "spectre_panel",
-          title = "SPECTRE",
-          size = { height = 0.4 },
-        },
-        {
-          ft = "toggleterm",
-          title = "TERMINAL",
-          size = { height = 0.4 },
-          filter = function(buf, win)
-            return vim.api.nvim_win_get_config(win).relative == ""
-          end,
-        },
-        {
-          ft = "Trouble",
-          title = "TROUBLE",
-          filter = function(buf, win)
-            return vim.api.nvim_win_get_config(win).relative == ""
-          end,
-        },
-        { ft = "qf", title = "QUICKFIX" },
-        {
-          ft = "noice",
-          size = { height = 0.4 },
-          filter = function(buf, win)
-            return vim.api.nvim_win_get_config(win).relative == ""
-          end,
-        },
-        {
-          ft = "help",
-          size = { height = 20 },
-          -- only show help buffers
-          filter = function(buf)
-            return vim.bo[buf].buftype == "help"
-          end,
-        },
-      },
-    },
   },
   {
     "folke/flash.nvim",
@@ -506,8 +561,8 @@ return {
     config = function()
       require('nvim-highlight-colors').setup({
         render = "virtual",
-        virtual_symbol = '■',
-        -- virtual_symbol = '',
+        -- virtual_symbol = '■',
+        virtual_symbol = '',
         -- virtual_symbol = '',
         -- virtual_symbol = '󰉦',
       })
@@ -622,15 +677,52 @@ return {
   },
   {
     "yetone/avante.nvim",
+    enabled = true,
     lazy = false,
     event = "VeryLazy",
     version = false,
     opts = {
-      provider = "openai",
+      default = "copilot",
+      provider = "copilot",
       -- add any opts here
       -- openai = {
       --  model = "gpt-4o-mini"
       --}
+      auto_suggestions_provider = "copilot",
+      behaviour = {
+        auto_suggestions = true,
+        auto_set_highlight_group = true,
+        auto_set_keymaps = true,
+        auto_apply_diff_after_generation = true,
+        support_paste_from_clipboard = true,
+      },
+      windows = {
+        position = "right",
+        width = 30,
+        sidebar_header = {
+          align = "center",
+          rounded = false,
+        },
+        ask = {
+          floating = true,
+          start_insert = true,
+          border = "rounded"
+        }
+      },
+      -- copilot = {
+      --   -- model = "gpt-4o-mini",
+      --   model = "gpt-4o-2024-05-13",
+      --   -- api_key = "your-api-key-here",
+      --   organization = "PORT-INC",
+      --
+      --   -- model = "gpt-4o-mini",
+      --   max_tokens = 4096,
+      -- },
+      openai = {
+        model = "gpt-4o", -- $2.5/$10
+        -- model = "gpt-4o-mini", -- $0.15/$0.60
+        max_tokens = 4096,
+      },
     },
     build = "make",
     keys = {
@@ -639,11 +731,21 @@ return {
       { "<leader>ae", function() require("avante.api").edit() end,    desc = "avante: edit",   mode = "v" },
     },
     dependencies = {
+      "nvim-treesitter/nvim-treesitter",
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "nvim-web-devicons",           -- or echasnovski/mini.icons
+      {
+        "zbirenbaum/copilot.lua",    -- for providers='copilot'
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+          require("copilot").setup({})
+        end,
+      },
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
@@ -678,7 +780,8 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = {
-      provider = "openai", -- You can configure your provider, model or keymaps here.
+      provider = "openai",
+      auto_completion = false,
     }
   },
   {
@@ -702,12 +805,12 @@ return {
       "folke/trouble.nvim",
     },
   },
-  {
-    'akinsho/toggleterm.nvim',
-    version = "*",
-    lazy = false,
-    config = true
-  },
+  -- {
+  --   'akinsho/toggleterm.nvim',
+  --   version = "*",
+  --   lazy = false,
+  --   config = true
+  -- },
   {
     "kdheepak/lazygit.nvim",
     cmd = {
@@ -996,6 +1099,22 @@ return {
       ]])
     end
   },
+  {
+    "github/copilot.vim",
+    event = "VeryLazy",
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+    end,
+  },
+  {
+    "mihyaeru21/nvim-ruby-lsp",
+    lazy = false,
+    config = function()
+      require('ruby-lsp').setup()
+    end,
+  }
+
   -- {
   --   "OXY2DEV/markview.nvim",
   --   enabled = true,

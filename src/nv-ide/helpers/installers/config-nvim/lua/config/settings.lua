@@ -19,6 +19,14 @@ vim.opt.listchars = {
   eol = "↲",
   nbsp = "␣",
 }
+function my_paste(reg)
+  return function(lines)
+    local content = vim.fn.getreg('"')
+    return vim.split(content, '\n')
+  end
+end
+
+opt.clipboard:append("unnamedplus")
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -26,10 +34,27 @@ vim.g.clipboard = {
     ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
   },
   paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    ["+"] = my_paste("+"),
+    ["*"] = my_paste("*"),
   },
 }
+-- if (os.getenv('SSH_TTY') == nil)
+-- then
+--   opt.clipboard:append("unnamedplus")
+-- else
+--   opt.clipboard:append("unnamedplus")
+--   vim.g.clipboard = {
+--     name = 'OSC 52',
+--     copy = {
+--       ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+--       ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+--     },
+--     paste = {
+--       ["+"] = my_paste("+"),
+--       ["*"] = my_paste("*"),
+--     },
+--   }
+-- end
 opt.shell = "bash"   -- Enable auto write
 opt.autowrite = true -- Enable auto write
 opt.foldnestmax = 4
@@ -64,7 +89,7 @@ opt.encoding = 'UTF-8'
 opt.completeopt = { 'menu', 'menuone', 'noselect' }
 opt.clipboard = 'unnamedplus'
 opt.laststatus = 3
-opt.timeoutlen = 300
+opt.timeoutlen = 500
 opt.splitkeep = 'screen'
 opt.termguicolors = true           -- True color support
 opt.updatetime = 200               -- Save swap file and trigger CursorHold

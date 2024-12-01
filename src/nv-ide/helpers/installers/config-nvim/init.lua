@@ -16,4 +16,6 @@ require('config.font')
 require('config.completion')
 -- KEYMAP
 require('config.mappings')
--- vim.lsp.set_log_level("debug")
+-- vim.cmd [[colorscheme okcolors-smooth]]
+require('avante_lib').load()
+require('avante').setup()

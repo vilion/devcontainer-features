@@ -4,6 +4,8 @@ local M = {
   dependencies = {
     { "williamboman/mason.nvim" },
     { "williamboman/mason-lspconfig.nvim" },
+    { 'saghen/blink.cmp' },
+    { "hrsh7th/nvim-cmp" },
     { "hrsh7th/cmp-nvim-lsp" },
     {
       "SmiteshP/nvim-navbuddy",
@@ -83,8 +85,12 @@ function M.on_attach(client, bufnr)
       return
     end
 
-    local test_name = command.arguments[1]
-    local cmd = { "bundle", "exec", "rspec", test_name }
+    -- local test_name = command.arguments[1]
+    -- local cmd = { "bundle", "exec", "rspec", test_name }
+    local cmd = command.arguments[3]
+    for _, arg in ipairs(command.arguments) do
+      print(vim.inspect(arg))
+    end
 
     vim.fn.jobstart(cmd, {
       on_stdout = function(_, data)
@@ -240,11 +246,12 @@ end
 function M.config()
   local lspconfig = require("lspconfig")
   local mason_lspconfig = require("mason-lspconfig")
-  local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
+  capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
   capabilities.textDocument.foldingRange = {
     dynamicRegistration = false,
-    -- lineFoldingOnly = true
+    lineFoldingOnly = true
   }
   vim.diagnostic.config({
     virtual_text = false,
@@ -299,7 +306,7 @@ function M.config()
       'solang',
       -- 'solargraph',
       'ruby_lsp',
-      'rubocop',
+      -- 'rubocop',
       'efm'
     },
   }
@@ -440,33 +447,41 @@ function M.config()
         },
       }
       lspconfig.ruby_lsp.setup({
-        cmd = { "/usr/local/bundle/gems/ruby-lsp-0.20.1/exe/ruby-lsp" },
+        cmd = { "/usr/local/bundle/gems/ruby-lsp-0.22.1/exe/ruby-lsp" },
         on_attach = M.on_attach,
         capabilities,
         filetypes = { "ruby", "erb" },
         root_dir = util.root_pattern("Gemfile", ".git"),
         init_options = {
           enabledFeatures = {
-            "codeActions",
-            "codeLens",
-            "completion",
-            "definition",
-            "diagnostics",
-            "documentHighlights",
-            "documentLink",
-            "documentSymbols",
-            "foldingRanges",
-            "formatting",
-            "hover",
-            "inlayHint",
-            "onTypeFormatting",
-            "selectionRanges",
-            "semanticHighlighting",
-            "signatureHelp",
-            "typeHierarchy",
-            "workspaceSymbol",
-            "references"
-          }
+            codeActions = true,
+            codeLens = true,
+            completion = true,
+            definition = true,
+            diagnostics = true,
+            documentHighlights = true,
+            documentLink = true,
+            documentSymbols = true,
+            foldingRanges = true,
+            formatting = true,
+            hover = true,
+            inlayHint = true,
+            onTypeFormatting = true,
+            selectionRanges = true,
+            semanticHighlighting = true,
+            signatureHelp = true,
+            typeHierarchy = true,
+            workspaceSymbol = true
+          },
+          featuresConfiguration = {
+            inlayHint = {
+              implicitHashValue = true,
+              implicitRescue = true
+            }
+          },
+          formatter = "auto",
+          linters = { "rubocop" },
+          -- experimentalFeaturesEnabled = true
         }
       })
     end,
@@ -568,30 +583,30 @@ function M.config()
         },
       })
     end,
-    ["rubocop"] = function()
-      lspconfig.rubocop.setup({
-        cmd = { "bundle", "exec", "rubocop", "--lsp" },
-        on_attach = M.on_attach,
-        capabilities,
-        filetypes = { "ruby", "erb" },
-        settings = {
-          rubocop = {
-            diagnostics = {
-              enable = true,
-            },
-            lint = {
-              enabled = true,
-            },
-            completion = {
-              enabled = true,
-            },
-            hover = {
-              enabled = true,
-            },
-          },
-        },
-      })
-    end,
+    -- ["rubocop"] = function()
+    --   lspconfig.rubocop.setup({
+    --     cmd = { "bundle", "exec", "rubocop", "--lsp" },
+    --     on_attach = M.on_attach,
+    --     capabilities,
+    --     filetypes = { "ruby", "erb" },
+    --     settings = {
+    --       rubocop = {
+    --         diagnostics = {
+    --           enable = true,
+    --         },
+    --         lint = {
+    --           enabled = true,
+    --         },
+    --         completion = {
+    --           enabled = true,
+    --         },
+    --         hover = {
+    --           enabled = true,
+    --         },
+    --       },
+    --     },
+    --   })
+    -- end,
     ["sqlls"] = function()
       lspconfig.sqlls.setup({
         on_attach = M.on_attach,
@@ -914,7 +929,7 @@ function M.config()
       })
     end
   }
-  require("ufo").setup()
+  -- require("ufo").setup()
 end
 
 return M

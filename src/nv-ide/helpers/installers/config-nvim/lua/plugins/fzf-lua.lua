@@ -1,7 +1,7 @@
 return {
   "ibhagwan/fzf-lua",
   lazy = false,
-  enabled = false,
+  enabled = true,
   dependencies = { "nvim-tree/nvim-web-devicons" },
   keys = {
     { "<leader>r", ":FzfLua live_grep<CR>", noremap = true, silent = true, desc = "Live grep" },
@@ -22,7 +22,7 @@ return {
     require("fzf-lua").setup({
       -- "telescope",
       fzf_opts = {
-        ['--layout'] = 'reverse-list',
+        ['--layout'] = 'default',
         -- ['--with-nth'] = '2..,-1',
       },
       defaults = {
@@ -32,6 +32,9 @@ return {
         border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃"},
       }
     })
+    local config = require("fzf-lua.config")
+    local actions = require("trouble.sources.fzf").actions
+    config.defaults.actions.files["ctrl-t"] = actions.open
     _G.fzf_dirs = function(opts)
       local fzf_lua = require'fzf-lua'
       opts = opts or {}

@@ -1,5 +1,8 @@
 return {
   "akinsho/nvim-toggleterm.lua",
+  dependencies = {
+    'akinsho/toggleterm.nvim'
+  },
   keys = {
     { "<leader>x", desc = "Terminal" },
     { "<leader>gg", "<cmd>lua _lazygit_toggle()<CR>", desc = "Lazygit" },
