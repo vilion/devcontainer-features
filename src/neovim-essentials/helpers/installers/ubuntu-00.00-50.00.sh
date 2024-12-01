@@ -16,9 +16,7 @@ if [ $WGET = "true" ]; then
 	pkgs+=("wget")
 fi
 
-if [ $CURL = "true" ]; then
-	pkgs+=("curl")
-fi
+pkgs+=("curl")
 
 if [ $PYTHON3 = "true" ]; then
 	pkgs+=("python3")
