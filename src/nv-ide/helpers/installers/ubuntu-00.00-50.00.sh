@@ -51,6 +51,10 @@ then
 fi
 apt-get install -y default-mysql-server
 cd /tmp
+
+su -l neovimuser << 'EOF'
+	luarocks install --lua-version 5.1 tiktoken_core
+EOF
 # mkdir -p /etc/apt/keyrings
 # curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --no-tty --dearmor -o /etc/apt/keyrings/charm.gpg
 # echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list

@@ -14,7 +14,7 @@ if [ "$ARCH" = "aarch64" ]; then
 ninja-build gettext cmake unzip curl build-essential ca-certificates
 	git clone https://github.com/neovim/neovim.git
 	cd neovim
-  git checkout stable
+  git checkout nightly
   make CMAKE_BUILD_TYPE=RelWithDebInfo
   make install
     # curl -LO https://github.com/matsuu/neovim-aarch64-appimage/releases/download/v0.10.1/nvim-v0.10.1-aarch64.appimage
@@ -31,7 +31,8 @@ ninja-build gettext cmake unzip curl build-essential ca-certificates
     # usermod -a -G fuse root
 		# usermod -a -G fuse neovimuser
 else
-    wget "https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux64.tar.gz"
+    # wget "https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux64.tar.gz"
+    wget "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
     tar xf nvim-linux64.tar.gz
     rm nvim-linux64.tar.gz
 

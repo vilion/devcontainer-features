@@ -39,7 +39,6 @@ fi
 pkgs+=("unzip")
 pkgs+=("libreadline-dev")
 pkgs+=("lua5.1")
-pkgs+=("fzf")
 pkgs+=("luajit")
 pkgs+=("autotools-dev")
 pkgs+=("autoconf")
@@ -53,6 +52,11 @@ pkgs+=("upower")
 pkgs+=("liblua5.1-dev")
 pkgs+=("opam")
 pkgs+=("bubblewrap")
+pkgs+=("lynx")
+pkgs+=("chafa")
+
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 
 cd /tmp
 apt install -y "${pkgs[@]}"
@@ -66,12 +70,12 @@ wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
 luarocks config variables.LUA_INCDIR /usr/include/lua5.1
 # luarocks install jsregexp
 
-if dpkg -l | grep -q "^ii  git "; then
-    apt remove -y git
-fi
+apt remove -y git
+apt purge -y git
+apt autoremove -y
 cd /tmp
-wget https://github.com/git/git/archive/refs/tags/v2.47.0.tar.gz \
-	&& tar -xzf v2.47.0.tar.gz \
+wget https://github.com/git/git/archive/refs/tags/v2.47.1.tar.gz \
+	&& tar -xzf v2.47.1.tar.gz \
 	&& cd git-* \
 	&& make prefix=/usr/local all \
 	&& make prefix=/usr/local install
@@ -163,9 +167,10 @@ rustup update
 cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 if command -v gem
 then
-	gem install neovim
+	gem install neovim neovim-ruby-host
 fi
 cargo install lsp-ai
+cargo install viu
 EOF
 
 # Add SSH agent initialization to neovimuser's bashrc
@@ -192,3 +197,16 @@ else
     start_agent;
 fi
 EOL
+
+(type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
+	&& mkdir -p -m 755 /etc/apt/keyrings \
+	&& wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& apt update -y \
+	&& apt install gh -y
+
+echo 'deb http://download.opensuse.org/repositories/home:/justkidding/Debian_Unstable/ /' | tee /etc/apt/sources.list.d/home:justkidding.list
+curl -fsSL https://download.opensuse.org/repositories/home:justkidding/Debian_Unstable/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null
+apt update -y
+apt install ueberzugpp -y
