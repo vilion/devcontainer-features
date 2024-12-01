@@ -40,7 +40,7 @@ then
 	su neovimuser -c 'cd /app && git config --global user.email "takabatakekoichi@gmail.com"'
 	su neovimuser -c 'cd /app && git config --global user.name "takabatake"'
 	su neovimuser -c 'cd /app && bundle install & wait'
-	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails ruby-lsp-rspec neovim rbs & wait'
+	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails neovim rbs & wait'
 	su neovimuser -c 'cd /app && rbs collection install & wait'
 	su neovimuser -c 'cd /app && yard gems & wait'
 fi
@@ -52,9 +52,7 @@ fi
 apt-get install -y default-mysql-server
 cd /tmp
 
-su -l neovimuser << 'EOF'
-	luarocks install --lua-version 5.1 tiktoken_core
-EOF
+su neovimuser -c 'luarocks install --lua-version 5.1 tiktoken_core & wait'
 # mkdir -p /etc/apt/keyrings
 # curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --no-tty --dearmor -o /etc/apt/keyrings/charm.gpg
 # echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list

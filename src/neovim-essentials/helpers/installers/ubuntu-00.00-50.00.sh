@@ -73,6 +73,9 @@ luarocks config variables.LUA_INCDIR /usr/include/lua5.1
 apt remove -y git
 apt purge -y git
 apt autoremove -y
+
+apt-get install libcurl4-openssl-dev gettext -y
+
 cd /tmp
 wget https://github.com/git/git/archive/refs/tags/v2.47.1.tar.gz \
 	&& tar -xzf v2.47.1.tar.gz \
@@ -82,7 +85,7 @@ wget https://github.com/git/git/archive/refs/tags/v2.47.1.tar.gz \
 
 cd /tmp
 rm -rf /tmp/ctags
-git clone https://github.com/universal-ctags/ctags.git
+/usr/local/bin/git clone https://github.com/universal-ctags/ctags.git
 cd ctags
 ./autogen.sh
 ./configure
@@ -167,7 +170,7 @@ rustup update
 cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
 if command -v gem
 then
-	gem install neovim neovim-ruby-host
+	gem install neovim neovim-ruby-host yard
 fi
 cargo install lsp-ai
 cargo install viu
@@ -205,8 +208,3 @@ EOL
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& apt update -y \
 	&& apt install gh -y
-
-echo 'deb http://download.opensuse.org/repositories/home:/justkidding/Debian_Unstable/ /' | tee /etc/apt/sources.list.d/home:justkidding.list
-curl -fsSL https://download.opensuse.org/repositories/home:justkidding/Debian_Unstable/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null
-apt update -y
-apt install ueberzugpp -y
