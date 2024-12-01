@@ -73,6 +73,9 @@ luarocks config variables.LUA_INCDIR /usr/include/lua5.1
 apt remove -y git
 apt purge -y git
 apt autoremove -y
+
+apt-get install libcurl4-openssl-dev gettext -y
+
 cd /tmp
 wget https://github.com/git/git/archive/refs/tags/v2.47.1.tar.gz \
 	&& tar -xzf v2.47.1.tar.gz \
@@ -82,7 +85,7 @@ wget https://github.com/git/git/archive/refs/tags/v2.47.1.tar.gz \
 
 cd /tmp
 rm -rf /tmp/ctags
-git clone https://github.com/universal-ctags/ctags.git
+/usr/logal/bin/git clone https://github.com/universal-ctags/ctags.git
 cd ctags
 ./autogen.sh
 ./configure
