@@ -12,9 +12,9 @@ ARCH="$(uname -m)"
 if [ "$ARCH" = "aarch64" ]; then
 	apt update && apt install -y --no-install-recommends \
 ninja-build gettext cmake unzip curl build-essential ca-certificates
-	git clone https://github.com/neovim/neovim.git
+	/usr/local/bin/git clone https://github.com/neovim/neovim.git
 	cd neovim
-  git checkout nightly
+  /usr/local/bin/git checkout nightly
   make CMAKE_BUILD_TYPE=RelWithDebInfo
   make install
     # curl -LO https://github.com/matsuu/neovim-aarch64-appimage/releases/download/v0.10.1/nvim-v0.10.1-aarch64.appimage
