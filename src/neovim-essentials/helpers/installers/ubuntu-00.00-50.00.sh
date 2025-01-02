@@ -54,12 +54,19 @@ pkgs+=("opam")
 pkgs+=("bubblewrap")
 pkgs+=("lynx")
 pkgs+=("chafa")
+pkgs+=("gnupg")
 
+cd /tmp
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 
-cd /tmp
 apt install -y "${pkgs[@]}"
+apt-get update -y
+
+cd /tmp
+wget https://github.com/fastfetch-cli/fastfetch/releases/download/2.33.0/fastfetch-linux-aarch64.deb
+dpkg -i fastfetch-linux-aarch64.deb
+
 wget https://luarocks.org/releases/luarocks-3.11.1.tar.gz \
 	&& tar -xzpf luarocks-3.11.1.tar.gz \
 	&& cd luarocks-3.11.1 \
