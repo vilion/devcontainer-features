@@ -93,6 +93,8 @@ make
 make install
 ctags --version
 
+apt install gitleaks -y
+
 cd /tmp
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt install -y nodejs
@@ -121,7 +123,6 @@ os:
 EOFLAZY
 
 pip3 install pynvim
-pip3 install pre-commit
 npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
 npm install -g tree-sitter-cli

@@ -43,6 +43,8 @@ then
 	su neovimuser -c 'cd /app && gem install ruby-lsp ruby-lsp-rails neovim rbs & wait'
 	su neovimuser -c 'cd /app && rbs collection install & wait'
 	su neovimuser -c 'cd /app && yard gems & wait'
+	su neovimuser -c 'cd /app && npm ci && lefthook install'
+	su neovimuser -c 'pip3 install pre-commit-hooks'
 fi
 
 if command -v updatedb
