@@ -121,7 +121,6 @@ os:
 EOFLAZY
 
 pip3 install pynvim
-pip3 install pre-commit
 npm install -g neovim
 npm install -g @fivetrandevelopers/dbt-language-server
 npm install -g tree-sitter-cli
@@ -199,6 +198,10 @@ if [ -f "${SSH_ENV}" ]; then
 else
     start_agent;
 fi
+export PATH=$PATH:$HOME/.cargo/bin
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 EOL
 
 (type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
@@ -208,3 +211,17 @@ EOL
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& apt update -y \
 	&& apt install gh -y
+
+cd /tmp
+wget https://go.dev/dl/go1.23.4.linux-arm64.tar.gz
+tar -C /usr/local -xzf go1.23.4.linux-arm64.tar.gz
+
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+go install github.com/rhysd/actionlint/cmd/actionlint@latest
+
+cd /tmp
+git clone https://github.com/gitleaks/gitleaks.git
+cd gitleaks
+make build
