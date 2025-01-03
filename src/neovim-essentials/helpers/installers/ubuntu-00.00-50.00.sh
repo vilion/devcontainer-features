@@ -180,6 +180,9 @@ then
 fi
 cargo install lsp-ai
 cargo install viu
+cd ~
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 EOF
 
 # Add SSH agent initialization to neovimuser's bashrc
